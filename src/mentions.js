@@ -3,91 +3,130 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  Tabla con shurmanos que han posteado en la página actual al pulsar @
-// @author       Siralos
+// @author       Siralos & Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
+// @run-at       document-end
 // @grant        none
 // ==/UserScript==
 
 (function () {
 	'use strict';
-	$('#vB_Editor_QR_textarea').keypress(function (e) {
-		if(e.keyCode == 64) //@
-		{
-			if(!$('#nicks').length) {
-				var listanicks = [];
-				var div = $(this).parent().parent();
-				var html = "<TABLE id=nicks><tr>";
-				var int = 0;
 
-				$('.bigusername').each(function (index) {
-					if(listanicks.indexOf($(this).text()) == -1) {
-						listanicks.push($(this).text());
-					}
-				});
-				listanicks.sort(function (a, b) {
-					return a.toLowerCase().localeCompare(b.toLowerCase());
-				});
-				listanicks.forEach(function (element) {
-					html = html + "<td><div id='nick'>" + element + "</div></td>"
-					int += 1;
-					if(int % 6 == 0) html = html + "</tr><tr>";
-				});
-				html = html + "</tr></TABLE>";
-				div.prepend(html);
 
-				$('#nicks').on('click', 'td', function (e) {
-					var texto = $('#vB_Editor_QR_textarea').val();
-					$('#vB_Editor_QR_textarea').val(texto + $(this).text());
-					$('#nicks').hide();
-					$('#vB_Editor_QR_textarea').focus();
-				});
-			} else {
-				$('#nicks').show();
+	// Add css styles to <head>
+	$('html > head').append($(`
+		<style>
+			.nick:hover {
+				color: red;
+				text-decoration: underline;
+				cursor: pointer;
 			}
-		}
+
+			#nicks td {
+				padding: 5px;
+			}
+		</style>
+	`));
+
+	const defaultEditorSelector = '#vB_Editor_QR_textarea';
+	const replayEditorSelector = '#vB_Editor_001_textarea';
+
+	const editor = $(defaultEditorSelector).length > 0 ?
+		$(defaultEditorSelector) : $(replayEditorSelector);
+
+	var nicklist = [];
+
+	// Load nicks when page is ready
+	$(function () {
+
+		// Choose the correct selector
+		let nickSelector = editor.selector == defaultEditorSelector ?
+			'.bigusername' : 'div#collapseobj_threadreview td.alt2';
+
+		// Append nickname to nicklist only once
+		$(nickSelector).each((index, value) => {
+			if(nickSelector != '.bigusername' ^ !value.parentElement.title.indexOf('Mensaje') != 0)
+				return;
+
+			let nickname = value.innerText.trim();
+
+			if(nicklist.indexOf(nickname) === -1) {
+				nicklist.push(nickname);
+			}
+		});
+
+		nicklist.sort(function (a, b) {
+			return a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+
+
+		// Create nick table
+		let div = $(editor).parent().parent();
+
+		if(editor.selector === replayEditorSelector)
+			div = div.parent();
+
+		let table = "<table id=nicks>";
+		let col = 0;
+
+		nicklist.forEach(function (nick) {
+			table += "<td><div class='nick'>" + nick + "</div></td>"
+			if(col++ % 6 === 0) table = "</tr>" + table + "<tr>";
+		});
+
+		table += "</table>";
+
+		div.prepend(table);
+
+		$('#nicks').on('click', 'td', function (e) {
+			let cursor = editor.prop("selectionStart");
+			var text = editor.val();
+
+			// Check if is there a space after the cursor
+			let needSpace = text.substr(cursor, 1) !== ' ';
+
+			// Add name on cursor position, not at the end
+			let newText = text.substr(0, cursor) + $(this).text();
+			newText += (needSpace ? ' ' : '') + text.substr(cursor);
+
+			// Get new cursor position
+			let newCursor = cursor + newText.length + 1;
+
+			$('#nicks').hide();
+
+			editor.val(newText);
+			editor.focus();
+
+			// Set cursor position
+			editor[0].setSelectionRange(newCursor, newCursor);
+		});
+
+		$('#nicks').hide();
 	});
 
-
-
-	$('#vB_Editor_001_textarea').keypress(function (e) {
-		if(e.keyCode == 64) //@
-		{
-			if(!$('#nicks2').length) {
-				var listanicks = [];
-				var div = $(this).parent().parent();
-				var html = "<TABLE id=nicks2><tr>";
-				var int = 0;
-
-				$('div#collapseobj_threadreview').find('td.alt2').each(function (index) {
-					var title = String($(this).parent().attr('title'));
-					if(title.match(/Mensaje.*/)) {
-						if(listanicks.indexOf($(this).text()) == -1) {
-							listanicks.push($(this).text());
-						}
-					}
-				});
-				listanicks.sort(function (a, b) {
-					return a.toLowerCase().localeCompare(b.toLowerCase());
-				});
-				listanicks.forEach(function (element) {
-					html = html + "<td><div id='nick'>" + element + "</div></td>"
-					int += 1;
-					if(int % 6 == 0) html = html + "</tr><tr>";
-				});
-				html = html + "</tr></TABLE>";
-				div.prepend(html);
-
-				$('#nicks2').on('click', 'td', function (e) {
-					var texto = $('#vB_Editor_001_textarea').val();
-					$('#vB_Editor_001_textarea').val(texto + $(this).text());
-					$('#nicks2').hide();
-					$('#vB_Editor_001_textarea').focus();
-				});
-			} else {
-				$('#nicks2').show();
-			}
-		}
+	// Set trigger key
+	editor.keypress(function (e) {
+		if(e.key === '@') $('#nicks').show();
+		else $('#nicks').hide()
 	});
+
+	// Update Editor State
+	function updateEditorState(e) {
+		let cursor = editor.prop("selectionStart");
+
+		if(editor.val()[cursor - 1] === '@') {
+			$('#nicks').show();
+			editor[0].scrollIntoView()
+		} else {
+			$('#nicks').hide();
+		}
+	}
+
+	editor.keydown(updateEditorState);
+	editor.keyup(updateEditorState);
+	editor.click(updateEditorState);
+	editor.change(updateEditorState);
+
 
 })();
