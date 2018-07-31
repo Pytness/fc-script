@@ -10,123 +10,148 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-	'use strict';
+(function() {
+    'use strict';
 
 
-	// Add css styles to <head>
-	$('html > head').append($(`
-		<style>
-			.nick:hover {
-				color: red;
-				text-decoration: underline;
-				cursor: pointer;
-			}
+    // Add css styles to <head>
+    $('html > head').append($(`
+    		<style>
+    			.nick:hover {
+    				color: red;
+    				text-decoration: underline;
+    				cursor: pointer;
+    			}
 
-			#nicks td {
-				padding: 5px;
-			}
-		</style>
-	`));
+    			#nicktable td {
+    				padding: 5px 10px;
+    			}
+    		</style>
+    `));
 
-	const defaultEditorSelector = '#vB_Editor_QR_textarea';
-	const replayEditorSelector = '#vB_Editor_001_textarea';
+    const defaultEditorSelector = '#vB_Editor_QR_textarea';
+    const replayEditorSelector = '#vB_Editor_001_textarea';
 
-	const editor = $(defaultEditorSelector).length > 0 ?
-		$(defaultEditorSelector) : $(replayEditorSelector);
+    const editor = $(defaultEditorSelector).length > 0 ?
+        $(defaultEditorSelector) : $(replayEditorSelector);
 
-	var nicklist = [];
+    var nicklist = [];
 
-	// Load nicks when page is ready
-	$(function () {
+    // Load nicks when page is ready
+	// Then build nicktable
+    $(function() {
 
-		// Choose the correct selector
-		let nickSelector = editor.selector == defaultEditorSelector ?
-			'.bigusername' : 'div#collapseobj_threadreview td.alt2';
+        // Choose the correct selector
+        let nickSelector = editor.selector == defaultEditorSelector ?
+            '.bigusername' : 'div#collapseobj_threadreview td.alt2';
 
-		// Append nickname to nicklist only once
-		$(nickSelector).each((index, value) => {
-			if(nickSelector != '.bigusername' ^ !value.parentElement.title.indexOf('Mensaje') != 0)
-				return;
+        // Append nickname to nicklist only once
+        $(nickSelector).each((index, value) => {
 
-			let nickname = value.innerText.trim();
+            if (nickSelector != '.bigusername' ^ !value.parentElement.title.indexOf('Mensaje') != 0)
+                return;
 
-			if(nicklist.indexOf(nickname) === -1) {
-				nicklist.push(nickname);
-			}
-		});
+            let nickname = value.innerText.trim();
 
-		nicklist.sort(function (a, b) {
-			return a.toLowerCase().localeCompare(b.toLowerCase());
-		});
+            // If nickname not in the list
+            if (nicklist.indexOf(nickname) === -1)
+                nicklist.push(nickname);
+        });
+
+        nicklist.sort(function(a, b) {
+            a = a.toLowerCase();
+            b = b.toLowerCase();
+
+            return a.localeCompare(b);
+        });
 
 
-		// Create nick table
-		let div = $(editor).parent().parent();
+        // Create nick table
+        let div = $(editor).parent().parent();
 
-		if(editor.selector === replayEditorSelector)
-			div = div.parent();
+        if (editor.selector === replayEditorSelector)
+            div = div.parent();
 
-		let table = "<table id=nicks>";
-		let col = 0;
+        let table = "<table id='nicktable'>";
+        let col = 0;
 
-		nicklist.forEach(function (nick) {
-			table += "<td><div class='nick'>" + nick + "</div></td>"
-			if(col++ % 6 === 0) table = "</tr>" + table + "<tr>";
-		});
+        nicklist.forEach(function(nick) {
+            table += `<td><div class='nick'>${nick}</div></td>`;
 
-		table += "</table>";
+            if (col % 6 === 0 && col !== 0) // Build rows
+                table = "</tr>" + table + "<tr>";
 
-		div.prepend(table);
+            col += 1;
+        });
 
-		$('#nicks').on('click', 'td', function (e) {
-			let cursor = editor.prop("selectionStart");
-			var text = editor.val();
+        table += "</table>";
 
-			// Check if is there a space after the cursor
-			let needSpace = text.substr(cursor, 1) !== ' ';
+        div.prepend(table);
 
-			// Add name on cursor position, not at the end
-			let newText = text.substr(0, cursor) + $(this).text();
-			newText += (needSpace ? ' ' : '') + text.substr(cursor);
+        $('#nicktable').hide();
 
-			// Get new cursor position
-			let newCursor = cursor + newText.length + 1;
+        $('#nicktable').on('click', 'td', function(e) {
+            let cursor = editor.prop("selectionStart");
 
-			$('#nicks').hide();
+            let text = editor.val();
 
-			editor.val(newText);
-			editor.focus();
+            let preText = text.substr(0, cursor);
+            let postText = text.substr(cursor);
 
-			// Set cursor position
-			editor[0].setSelectionRange(newCursor, newCursor);
-		});
+            let nickname = $(this).text();
 
-		$('#nicks').hide();
-	});
+            let newText = preText;
 
-	// Set trigger key
-	editor.keypress(function (e) {
-		if(e.key === '@') $('#nicks').show();
-		else $('#nicks').hide()
-	});
+            // Check if is there a space after the cursor
+            let needSpace = text.substr(cursor, 1) !== ' ';
 
-	// Update Editor State
-	function updateEditorState(e) {
-		let cursor = editor.prop("selectionStart");
+            // If nickname has no spaces
+            if (nickname.split(' ').length == 1) {
+                newText += nickname;
+            } else {
+                // First remove '@' cause no longer needed
+                newText = newText.slice(0, -1);
 
-		if(editor.val()[cursor - 1] === '@') {
-			$('#nicks').show();
-			editor[0].scrollIntoView()
-		} else {
-			$('#nicks').hide();
-		}
-	}
+                newText += `[MENTION]${nickname}[/MENTION]`;
+            }
 
-	editor.keydown(updateEditorState);
-	editor.keyup(updateEditorState);
-	editor.click(updateEditorState);
-	editor.change(updateEditorState);
+            newText += (needSpace ? ' ' : '') + postText;
 
+            let newCursor = cursor + (newText.length - text.length) + 1;
+
+            $('#nicktable').hide();
+
+            editor.val(newText);
+            editor.focus();
+
+            // Set cursor position
+            editor[0].setSelectionRange(newCursor, newCursor);
+        });
+    });
+
+    // Set trigger key
+    editor.keypress(function(e) {
+        if (e.key === '@') $('#nicktable').show();
+        else $('#nicktable').hide()
+    });
+
+    // Update Editor State
+    function updateNicktableState(e) {
+        let cursor = editor.prop("selectionStart");
+
+        if (editor.val()[cursor - 1] === '@') {
+            $('#nicktable').show();
+            
+            if (editor.selector === defaultEditorSelector)
+                editor[0].scrollIntoView()
+        } else {
+            $('#nicktable').hide();
+        }
+    }
+
+    editor.keydown(updateNicktableState);
+    editor.keyup(updateNicktableState);
+    editor.click(updateNicktableState);
+    editor.change(updateNicktableState);
 
 })();
