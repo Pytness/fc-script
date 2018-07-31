@@ -1,2 +1,2 @@
 # fc-script
-Script para forocoches.com
+Scripts para forocoches.com
