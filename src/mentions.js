@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MencionadorScriptForocoches
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.01
 // @description  Tabla con shurmanos que han posteado en la página actual al pulsar @
 // @author       Siralos & Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
@@ -69,7 +69,6 @@
 		let tr = $('<tr>');
 
 		nicklist.forEach(function (nick, col) {
-			console.log(nick, col);
 			// Build rows
 			if((col % 6 === 0 && col !== 0) || col === nicklist.length - 1) {
 				table.append(tr);
