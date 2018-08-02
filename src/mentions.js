@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MencionadorScriptForocoches
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.01
 // @description  Tabla con shurmanos que han posteado en la página actual al pulsar @
 // @author       Siralos & Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
@@ -10,148 +10,133 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+	'use strict';
 
+	// Add css styles to <head>
+	$('html > head').append($(`
+			<style>
+				.nick:hover {
+					color: red;
+					text-decoration: underline;
+					cursor: pointer;
+				}
 
-    // Add css styles to <head>
-    $('html > head').append($(`
-    		<style>
-    			.nick:hover {
-    				color: red;
-    				text-decoration: underline;
-    				cursor: pointer;
-    			}
+				#nicktable td {
+					padding: 5px 10px;
+				}
+			</style>
+	`));
 
-    			#nicktable td {
-    				padding: 5px 10px;
-    			}
-    		</style>
-    `));
+	const defaultEditorSelector = '#vB_Editor_QR_textarea';
+	const replayEditorSelector = '#vB_Editor_001_textarea';
 
-    const defaultEditorSelector = '#vB_Editor_QR_textarea';
-    const replayEditorSelector = '#vB_Editor_001_textarea';
+	const isDefaultEditor = $(defaultEditorSelector).length > 0;
 
-    const editor = $(defaultEditorSelector).length > 0 ?
-        $(defaultEditorSelector) : $(replayEditorSelector);
+	const editor = isDefaultEditor ?
+		$(defaultEditorSelector) : $(replayEditorSelector);
 
-    var nicklist = [];
+	var nicklist = [];
 
-    // Load nicks when page is ready
-	// Then build nicktable
-    $(function() {
+	$(function () {
 
-        // Choose the correct selector
-        let nickSelector = editor.selector == defaultEditorSelector ?
-            '.bigusername' : 'div#collapseobj_threadreview td.alt2';
+		// Choose the correct selector
+		let nickSelector = isDefaultEditor ?
+			'.bigusername' : 'div#collapseobj_threadreview td.alt2';
 
-        // Append nickname to nicklist only once
-        $(nickSelector).each((index, value) => {
+		// Append nickname to nicklist only once
+		$(nickSelector).each((i, value) => {
 
-            if (nickSelector != '.bigusername' ^ !value.parentElement.title.indexOf('Mensaje') != 0)
-                return;
+			if(!isDefaultEditor ^ value.parentElement.title.includes('Mensaje'))
+				return;
 
-            let nickname = value.innerText.trim();
+			let nickname = value.innerText.trim();
 
-            // If nickname not in the list
-            if (nicklist.indexOf(nickname) === -1)
-                nicklist.push(nickname);
-        });
+			// If nickname not in the list
+			if(!nicklist.includes(nickname))
+				nicklist.push(nickname);
+		});
 
-        nicklist.sort(function(a, b) {
-            a = a.toLowerCase();
-            b = b.toLowerCase();
+		nicklist.sort();
 
-            return a.localeCompare(b);
-        });
+		// Create nick table
+		let div = $(editor).parent().parent();
 
+		if(editor.selector === replayEditorSelector)
+			div = div.parent();
 
-        // Create nick table
-        let div = $(editor).parent().parent();
+		let table = $("<table id='nicktable' style='display: none'></table>");
+		let tr = $('<tr>');
 
-        if (editor.selector === replayEditorSelector)
-            div = div.parent();
+		nicklist.forEach(function (nick, col) {
+			// Build rows
+			if((col % 6 === 0 && col !== 0) || col === nicklist.length - 1) {
+				table.append(tr);
+				tr = $('<tr>');
+			}
 
-        let table = "<table id='nicktable'>";
-        let col = 0;
+			tr.append(`<td><div class='nick'>${nick}</div></td>`);
+		});
 
-        nicklist.forEach(function(nick) {
-            table += `<td><div class='nick'>${nick}</div></td>`;
+		div.prepend(table);
 
-            if (col % 6 === 0 && col !== 0) // Build rows
-                table = "</tr>" + table + "<tr>";
+		$('#nicktable').on('click', 'td', function (e) {
 
-            col += 1;
-        });
+			$('#nicktable').hide();
 
-        table += "</table>";
+			let text = editor.val();
+			let cursor = editor.prop("selectionStart");
 
-        div.prepend(table);
+			let nickname = $(this).text();
+			let newText = text.substr(0, cursor);
 
-        $('#nicktable').hide();
+			// Add space padding if necessary
+			let padding = text.substr(cursor, 1) !== ' ' ? ' ' : '';
 
-        $('#nicktable').on('click', 'td', function(e) {
-            let cursor = editor.prop("selectionStart");
+			if(nickname.split(' ').length == 1) {
+				newText += nickname;
+			} else {
+				// First remove '@' cause no longer needed
+				newText = newText.slice(0, -1);
+				newText += `[MENTION]${nickname}[/MENTION]`;
+			}
 
-            let text = editor.val();
+			newText += padding + text.substr(cursor);
 
-            let preText = text.substr(0, cursor);
-            let postText = text.substr(cursor);
+			editor.val(newText);
+			editor.focus();
 
-            let nickname = $(this).text();
+			// Set cursor position
+			let newCursor = cursor + (newText.length - text.length) + 1;
 
-            let newText = preText;
+			editor[0].setSelectionRange(newCursor, newCursor);
+		});
+	});
 
-            // Check if is there a space after the cursor
-            let needSpace = text.substr(cursor, 1) !== ' ';
+	// Set trigger key
+	editor.keypress(function (e) {
+		if(e.key === '@')
+			$('#nicktable').show();
+		else
+			$('#nicktable').hide();
+	});
 
-            // If nickname has no spaces
-            if (nickname.split(' ').length == 1) {
-                newText += nickname;
-            } else {
-                // First remove '@' cause no longer needed
-                newText = newText.slice(0, -1);
+	// Update Editor State
+	function updateNicktableState(e) {
+		let cursor = editor.prop("selectionStart");
 
-                newText += `[MENTION]${nickname}[/MENTION]`;
-            }
+		if(editor.val()[cursor - 1] === '@') {
+			$('#nicktable').show();
 
-            newText += (needSpace ? ' ' : '') + postText;
+			if(isDefaultEditor) editor[0].scrollIntoView();
+		} else {
+			$('#nicktable').hide();
+		}
+	}
 
-            let newCursor = cursor + (newText.length - text.length) + 1;
-
-            $('#nicktable').hide();
-
-            editor.val(newText);
-            editor.focus();
-
-            // Set cursor position
-            editor[0].setSelectionRange(newCursor, newCursor);
-        });
-    });
-
-    // Set trigger key
-    editor.keypress(function(e) {
-        if (e.key === '@') $('#nicktable').show();
-        else $('#nicktable').hide()
-    });
-
-    // Update Editor State
-    function updateNicktableState(e) {
-        let cursor = editor.prop("selectionStart");
-
-        if (editor.val()[cursor - 1] === '@') {
-            $('#nicktable').show();
-            
-            if (editor.selector === defaultEditorSelector)
-                editor[0].scrollIntoView()
-        } else {
-            $('#nicktable').hide();
-        }
-    }
-
-    editor.keydown(updateNicktableState);
-    editor.keyup(updateNicktableState);
-    editor.click(updateNicktableState);
-    editor.change(updateNicktableState);
-
+	editor.keydown(updateNicktableState)
+	editor.keypress(updateNicktableState)
+	editor.keyup(updateNicktableState)
+	editor.click(updateNicktableState)
+	editor.change(updateNicktableState)
 })();
