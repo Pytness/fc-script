@@ -90,8 +90,6 @@
 		let alt1 = html.querySelectorAll('.alt1');
 		let alt2 = html.querySelectorAll('.alt2');
 
-		console.log(alt1, alt2);
-
 		let tempIcons = [];
 
 		for(let i = 1; i < alt1.length; i += 2) {
@@ -186,8 +184,6 @@
 			html += `<span>${el}</span><br>`
 		);
 
-		console.log(patt);
-
 		if(filteredIcons.length === 0 ||
 			(filteredIcons.length === 1 && filteredIcons[0] === patt)) {
 			bdata.display = false;
@@ -224,9 +220,7 @@
 			editor.off('click', operate);
 		}
 
-		console.log('bef', editor);
 		editor = $(this);
-		console.log('af', editor);
 
 		backdrop.remove();
 		editor.parent().append(backdrop);
