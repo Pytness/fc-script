@@ -28,115 +28,136 @@
 			</style>
 	`));
 
+	const pathname = location.pathname;
+
 	const defaultEditorSelector = '#vB_Editor_QR_textarea';
 	const replayEditorSelector = '#vB_Editor_001_textarea';
 
-	const isDefaultEditor = $(defaultEditorSelector).length > 0;
 
-	const editor = isDefaultEditor ?
-		$(defaultEditorSelector) : $(replayEditorSelector);
+	let editor = $('');
+	const usingDefaultEditor = () => $('#vB_Editor_QR').find(editor).length === 1;
 
-	var nicklist = [];
+	// Create nicklist
+	let nicklist = (() => {
 
-	$(function () {
-
-		// Choose the correct selector
-		let nickSelector = isDefaultEditor ?
+		let nickSelector = pathname === '/foro/showthread.php' ?
 			'.bigusername' : 'div#collapseobj_threadreview td.alt2';
 
-		// Append nickname to nicklist only once
-		$(nickSelector).each((i, value) => {
+		let nlist = [];
 
-			if(!isDefaultEditor ^ value.parentElement.title.includes('Mensaje'))
+		$(nickSelector).each((i, value) => {
+			if(!(pathname === '/foro/showthread.php') ^ value.parentElement.title.includes('Mensaje'))
 				return;
 
 			let nickname = value.innerText.trim();
 
 			// If nickname not in the list
-			if(!nicklist.includes(nickname))
-				nicklist.push(nickname);
+			if(!nlist.includes(nickname))
+				nlist.push(nickname);
 		});
 
-		nicklist.sort();
+		console.log(nlist);
 
-		// Create nick table
-		let div = $(editor).parent().parent();
+		return nlist.sort();
+	})();
 
-		if(editor.selector === replayEditorSelector)
-			div = div.parent();
-
+	let nicktable = (() => {
 		let table = $("<table id='nicktable' style='display: none'></table>");
 		let tr = $('<tr>');
 
 		nicklist.forEach(function (nick, col) {
 			// Build rows
+			tr.append(`<td><div class='nick'>${nick}</div></td>`);
+
 			if((col % 6 === 0 && col !== 0) || col === nicklist.length - 1) {
 				table.append(tr);
 				tr = $('<tr>');
 			}
-
-			tr.append(`<td><div class='nick'>${nick}</div></td>`);
 		});
 
-		div.prepend(table);
+		return table;
+	})();
 
-		$('#nicktable').on('click', 'td', function (e) {
+	function nickClick(e) {
+		nicktable.hide();
 
-			$('#nicktable').hide();
+		let text = editor.val();
+		let cursor = editor.prop("selectionStart");
 
-			let text = editor.val();
-			let cursor = editor.prop("selectionStart");
+		let nickname = $(this).text();
+		let newText = text.substr(0, cursor);
 
-			let nickname = $(this).text();
-			let newText = text.substr(0, cursor);
+		// Add space padding if necessary
+		let padding = text.substr(cursor, 1) !== ' ' ? ' ' : '';
 
-			// Add space padding if necessary
-			let padding = text.substr(cursor, 1) !== ' ' ? ' ' : '';
+		if(nickname.split(' ').length == 1) {
+			newText += nickname;
+		} else {
+			// First remove '@' cause no longer needed
+			newText = newText.slice(0, -1);
+			newText += `[MENTION]${nickname}[/MENTION]`;
+		}
 
-			if(nickname.split(' ').length == 1) {
-				newText += nickname;
-			} else {
-				// First remove '@' cause no longer needed
-				newText = newText.slice(0, -1);
-				newText += `[MENTION]${nickname}[/MENTION]`;
-			}
+		newText += padding + text.substr(cursor);
 
-			newText += padding + text.substr(cursor);
+		editor.val(newText);
+		editor.focus();
 
-			editor.val(newText);
-			editor.focus();
+		// Set cursor position
+		let newCursor = cursor + (newText.length - text.length) + 1;
 
-			// Set cursor position
-			let newCursor = cursor + (newText.length - text.length) + 1;
+		editor[0].setSelectionRange(newCursor, newCursor);
+	}
 
-			editor[0].setSelectionRange(newCursor, newCursor);
-		});
-	});
-
-	// Set trigger key
-	editor.keypress(function (e) {
+	function triggerKey(e) {
 		if(e.key === '@')
-			$('#nicktable').show();
+			nicktable.show();
 		else
-			$('#nicktable').hide();
-	});
+			nicktable.hide();
+	}
 
-	// Update Editor State
 	function updateNicktableState(e) {
 		let cursor = editor.prop("selectionStart");
 
 		if(editor.val()[cursor - 1] === '@') {
-			$('#nicktable').show();
-
-			if(isDefaultEditor) editor[0].scrollIntoView();
+			nicktable.show();
+			if(usingDefaultEditor()) editor[0].scrollIntoView();
 		} else {
-			$('#nicktable').hide();
+			nicktable.hide();
 		}
 	}
 
-	editor.keydown(updateNicktableState)
-	editor.keypress(updateNicktableState)
-	editor.keyup(updateNicktableState)
-	editor.click(updateNicktableState)
-	editor.change(updateNicktableState)
+	$('html').on('focus', 'textarea', function (e) {
+
+		console.log(e);
+		nicktable.hide();
+
+		if(editor !== null) {
+			editor.off('keypress', triggerKey);
+			editor.off('keypress', updateNicktableState);
+			editor.off('keypress', updateNicktableState);
+			editor.off('keyup', updateNicktableState);
+			editor.off('click', updateNicktableState);
+			editor.off('change', updateNicktableState);
+		}
+
+		nicktable.remove();
+
+		editor = $(this);
+
+		let parent = editor.parent().parent();
+		if(pathname !== '/foro/showthread.php')
+			parent = parent.parent();
+		parent.prepend(nicktable);
+
+		nicktable.on('click', 'td', nickClick);
+
+		editor.keypress(triggerKey);
+
+		editor.keypress(updateNicktableState);
+		editor.keypress(updateNicktableState);
+		editor.keyup(updateNicktableState);
+		editor.click(updateNicktableState);
+		editor.change(updateNicktableState);
+	});
 })();
