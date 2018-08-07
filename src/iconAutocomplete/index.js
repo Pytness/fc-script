@@ -6,11 +6,10 @@
 // @author       Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
+// @match        https://www.forocoches.com/foro/private.php*
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
-
-// TODO: add private message to @match
 
 (function () {
 	'use strict';
@@ -29,6 +28,7 @@
 					box-sizing: border-box;
 					border: 1px solid gray;
 					border-radius: 3px;
+					text-align: left;
 				}
 
 				.tm_backdrop > span {
@@ -44,10 +44,15 @@
 					text-decoration: underline;
 					cursor: pointer;
 				}
+
+				.tm_img {
+					/* max-width: 16px;*/
+					max-height: 20px;
+					display: inline;
+					float: right;
+				}
 			</style>
 	`));
-
-	const backdrop = $('<div class="tm_backdrop" style="display: none">');
 
 	let bdata = {
 		line: null,
@@ -59,6 +64,33 @@
 		display: false,
 		selectedIndex: -1
 	};
+
+	const backdrop = $('<div class="tm_backdrop" style="display: none">');
+
+	backdrop.on('click', 'span', function () {
+		bdata.display = false;
+		backdrop.hide();
+
+		let text = editor.val();
+		let cursor = editor.prop("selectionStart");
+		let lastIndex = text.lastIndexOf(':', cursor);
+
+
+		let iconText = $(this).text().trim();
+
+		// Add space padding if necessary
+		let newText = text.substr(0, lastIndex);
+		let padding = text[cursor] !== ' ' ? ' ' : '';
+
+		newText += iconText;
+		newText += padding + text.substr(cursor);
+
+		editor.val(newText);
+		editor.focus();
+
+		let newCursor = cursor + (newText.length - text.length) + 1;
+		editor[0].setSelectionRange(newCursor, newCursor);
+	});
 
 	let editor = null;
 
@@ -83,23 +115,22 @@
 		ajax.open('GET', 'https://www.forocoches.com/foro/misc.php?do=getsmilies', false);
 		ajax.send();
 
-		let parser = new DOMParser();
 
-		let html = parser.parseFromString(ajax.responseText, "text/html");
+		let html = (new DOMParser()).parseFromString(ajax.responseText, "text/html");
 
 		let alt1 = html.querySelectorAll('.alt1');
 		let alt2 = html.querySelectorAll('.alt2');
 
+		let iconTable = Array.from(alt1).concat(Array.from(alt2));
+
 		let tempIcons = [];
 
-		for(let i = 1; i < alt1.length; i += 2) {
-			let ic = alt1[i].innerText.trim();
-			if(ic[0] == ':' && ic.substr(-1) == ':') tempIcons.push(ic);
-		}
+		for(let i = 0; i < iconTable.length; i += 2) {
+			let text = iconTable[i + 1].innerText.trim();
+			let ic = iconTable[i].firstChild.src.split('/').slice(-1)[0];
 
-		for(let i = 1; i < alt2.length; i += 2) {
-			let ic = alt2[i].innerText.trim();
-			if(ic[0] == ':' && ic.substr(-1) == ':') tempIcons.push(ic);
+			if(text[0] == ':' && text.substr(-1) == ':')
+				tempIcons.push([text, ic]);
 		}
 
 		tempIcons.sort();
@@ -109,14 +140,12 @@
 	})();
 
 	function getTextWidth(text, font) {
-		// re-use canvas object for better performance
 		let canvas = getTextWidth.canvas || (getTextWidth.canvas = $("<canvas>")[0]);
 
 		let context = canvas.getContext("2d");
 		context.font = font;
 
-		let metrics = context.measureText(text);
-		return metrics.width;
+		return context.measureText(text).width;
 	}
 
 	const computeValues = () => {
@@ -125,6 +154,7 @@
 		let text = editor.val();
 		let cursor = editor.prop("selectionStart");
 
+		// first find, second find
 		let ff = text.lastIndexOf('\n', cursor - 1);
 		let sf = text.indexOf('\n', cursor);
 
@@ -162,8 +192,7 @@
 
 		let patt = bdata.line.substr(0, bdata.localCursor);
 
-		let init = patt.indexOf(':');
-		if(init === -1) {
+		if(patt.indexOf(':') === -1) {
 			bdata.display = false;
 			return;
 		} else {
@@ -173,7 +202,7 @@
 		patt = patt.slice(patt.lastIndexOf(':'));
 
 		let filteredIcons = icons.filter(icon => {
-			return patt === icon.substr(0, patt.length);
+			return patt === icon[0].substr(0, patt.length);
 		});
 
 		filteredIcons.sort();
@@ -181,7 +210,7 @@
 		let html = '';
 
 		filteredIcons.slice(0, bdata.maxRows).forEach(el =>
-			html += `<span>${el}</span><br>`
+			html += `<span>${el[0]} <img src="//st.forocoches.com/foro/images/smilies/${el[1]}" class="tm_img"></span><br>`
 		);
 
 		if(filteredIcons.length === 0 ||
@@ -206,51 +235,32 @@
 	};
 
 	// TODO: change name
-	function operate() {
+	function operate(e) {
 		computeValues();
 		updateBackdropRows();
 		updateBackdropPosition();
 	}
 
-	function setup() {
-		if(editor !== null) {
-			editor.off('keydown', operate);
-			editor.off('keypress', operate);
-			editor.off('keyup', operate);
-			editor.off('click', operate);
-		}
-
+	function setup(e) {
 		editor = $(this);
-
-		backdrop.remove();
-		editor.parent().append(backdrop);
-
-		editor.keydown(operate);
-		editor.keypress(operate);
-		editor.keyup(operate);
-		editor.click(operate);
+		editor.parents('form').submit(() => {
+			console.log('xd');
+			bdata.display = false;
+			backdrop.hide();
+		});
+		backdrop.appendTo(editor.parent());
 	}
 
-	$('html').on('click', 'textarea', setup);
-
-	backdrop.on('click', 'span', function () {
+	$('html').on('focus', 'textarea', setup);
+	$('html').on('submit', 'textarea', () => {
+		console.log('xd');
 		bdata.display = false;
 		backdrop.hide();
+	});
 
-		let text = editor.val();
-		let cursor = editor.prop("selectionStart");
-
-		// Add space padding if necessary
-		let padding = text.substr(cursor, 1) !== ' ' ? ' ' : '';
-
-		let newText = text.substr(0, cursor);
-		newText += $(this).text().slice(bdata.localCursor);
-		newText += padding + text.substr(cursor);
-
-		editor.val(newText);
-		editor.focus();
-
-		let newCursor = cursor + (newText.length - text.length) + 1;
-		editor[0].setSelectionRange(newCursor, newCursor);
-	})
+	$('html').on('keydown', 'textarea', operate);
+	$('html').on('keypress', 'textarea', operate);
+	$('html').on('keyup', 'textarea', operate);
+	$('html').on('click', 'textarea', operate);
+	$('html').on('focus', 'textarea', operate);
 })();

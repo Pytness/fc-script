@@ -84,7 +84,7 @@
 		let text = editor.val();
 		let cursor = editor.prop("selectionStart");
 
-		let nickname = $(this).text();
+		let nickname = $(this).text().trim();
 		let newText = text.substr(0, cursor);
 
 		// Add space padding if necessary
@@ -154,7 +154,6 @@
 
 		editor.keypress(triggerKey);
 
-		editor.keypress(updateNicktableState);
 		editor.keypress(updateNicktableState);
 		editor.keyup(updateNicktableState);
 		editor.click(updateNicktableState);
