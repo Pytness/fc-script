@@ -1,14 +1,16 @@
 // ==UserScript==
 // @name         Icon Autocomplete FC
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.01
 // @description  Autocomplete for icons in FC
 // @author       Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
 // @match        https://www.forocoches.com/foro/private.php*
+// @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
+// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.js
 // @run-at       document-end
-// @grant        none
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 (function () {
@@ -88,15 +90,16 @@
 		editor.val(newText);
 		editor.focus();
 
-		let newCursor = cursor + (newText.length - text.length) + 1;
+		let newCursor = cursor + (newText.length - text.length) + (padding == ' ' ? 0 : 1);
 		editor[0].setSelectionRange(newCursor, newCursor);
 	});
 
 	let editor = null;
 
 	let icons = (() => {
+		// Lets keep this just in case ;)
+		/*
 		// check if in cache
-
 		let lsItem = localStorage.getItem('tm_icons_json');
 		let jsonIcons = false;
 
@@ -132,10 +135,14 @@
 			if(text[0] == ':' && text.substr(-1) == ':')
 				tempIcons.push([text, ic]);
 		}
+		tempIcons.sort();
+		localStorage.setItem('tm_icons_json', JSON.stringify(tempIcons));
+		*/
 
+		let jsonIcons = GM_getResourceText('iconsJson');
+		let tempIcons = JSON.parse(jsonIcons);
 		tempIcons.sort();
 
-		localStorage.setItem('tm_icons_json', JSON.stringify(tempIcons));
 		return tempIcons;
 	})();
 
