@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Icon Autocomplete FC
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.01
 // @description  Autocomplete for icons in FC
 // @author       Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
