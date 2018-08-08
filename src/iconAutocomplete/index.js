@@ -89,7 +89,7 @@
 		editor.val(newText);
 		editor.focus();
 
-		let newCursor = cursor + (newText.length - text.length) + 1;
+		let newCursor = cursor + (newText.length - text.length) + (padding == ' ' ? 0 : 1);
 		editor[0].setSelectionRange(newCursor, newCursor);
 	});
 
