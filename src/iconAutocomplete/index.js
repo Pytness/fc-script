@@ -7,8 +7,9 @@
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
 // @match        https://www.forocoches.com/foro/private.php*
+// @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
 // @run-at       document-end
-// @grant        none
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 (function () {
@@ -95,8 +96,9 @@
 	let editor = null;
 
 	let icons = (() => {
+		// Lets keep this just in case ;)
+		/*
 		// check if in cache
-
 		let lsItem = localStorage.getItem('tm_icons_json');
 		let jsonIcons = false;
 
@@ -132,10 +134,14 @@
 			if(text[0] == ':' && text.substr(-1) == ':')
 				tempIcons.push([text, ic]);
 		}
+		tempIcons.sort();
+		localStorage.setItem('tm_icons_json', JSON.stringify(tempIcons));
+		*/
 
+		let jsonIcons = GM_getResourceText('iconsJson');
+		let tempIcons = JSON.parse(jsonIcons);
 		tempIcons.sort();
 
-		localStorage.setItem('tm_icons_json', JSON.stringify(tempIcons));
 		return tempIcons;
 	})();
 
