@@ -252,7 +252,6 @@
 	function setup(e) {
 		editor = $(this);
 		editor.parents('form').submit(() => {
-			console.log('xd');
 			bdata.display = false;
 			backdrop.hide();
 		});
@@ -261,7 +260,6 @@
 
 	$('html').on('focus', 'textarea', setup);
 	$('html').on('submit', 'textarea', () => {
-		console.log('xd');
 		bdata.display = false;
 		backdrop.hide();
 	});
