@@ -26,7 +26,6 @@
 				.tm_backdrop {
 					position: absolute;
 					background-color: white;
-					padding-top: 2px;
 					margin: 0px;
 					box-sizing: border-box;
 					border: 1px solid gray;
@@ -34,14 +33,18 @@
 					text-align: left;
 				}
 
-				.tm_backdrop > span {
+				.tm_backdrop > span.row:first {
+					padding-top: 2px;
+				}
+
+				.tm_backdrop > span.row {
 					width: 100%;
 					display: inline-block;
 					padding: 3px 5px;
 					box-sizing: border-box;
 				}
 
-				.tm_backdrop > span:hover {
+				.tm_backdrop > span.row:hover {
 					color: red;
 					background-color: rgba(0, 0, 0, 0.05);
 					text-decoration: underline;
@@ -65,12 +68,13 @@
 		textHeight: null,
 		maxRows: 10,
 		display: false,
-		selectedIndex: -1
+		selectedIndex: -1,
+		lineNumber: 0
 	};
 
 	const backdrop = $('<div class="tm_backdrop" style="display: none">');
 
-	backdrop.on('click', 'span', function () {
+	backdrop.on('click', 'span.row', function () {
 		bdata.display = false;
 		backdrop.hide();
 
@@ -157,7 +161,7 @@
 	}
 
 	const computeValues = () => {
-		let editorPos = editor.position();
+
 
 		let text = editor.val();
 		let cursor = editor.prop("selectionStart");
@@ -177,23 +181,10 @@
 		let localCursor = cursor - ff - 1;
 		line = line.substr(0, localCursor) + ' ';
 
-		let editorStyle = window.getComputedStyle(editor[0]);
-
-		let font = `${editorStyle.fontSize} ${editorStyle.fontFamily}`;
-		let padding = parseFloat(editorStyle.padding.slice(0, -2))
-
-		let fontSize = parseFloat(editorStyle.fontSize.slice(0, -2));
-
-		let textWidth = Math.ceil(getTextWidth(line + ' ', font));
-
-		let textHeight = ((lineNumber + 1) * fontSize);
-
 		bdata.line = line;
 		bdata.cursor = cursor;
 		bdata.localCursor = localCursor;
-
-		bdata.left = editorPos.left + textWidth + padding;
-		bdata.top = editorPos.top + textHeight + padding * 2;
+		bdata.lineNumber = lineNumber;
 	};
 
 	const updateBackdropRows = () => {
@@ -217,9 +208,12 @@
 
 		let html = '';
 
-		filteredIcons.slice(0, bdata.maxRows).forEach(el =>
-			html += `<span>${el[0]} <img src="//st.forocoches.com/foro/images/smilies/${el[1]}" class="tm_img"></span><br>`
-		);
+		filteredIcons = filteredIcons.slice(0, bdata.maxRows);
+
+		filteredIcons.slice(0, bdata.maxRows).forEach((el, i) => {
+			html += `<span class="row"><span>${el[0]}</span> <img src="//st.forocoches.com/foro/images/smilies/${el[1]}" class="tm_img"></span>`;
+			html += i != filteredIcons.length - 1 ? '<br>' : '';
+		});
 
 		if(filteredIcons.length === 0 ||
 			(filteredIcons.length === 1 && filteredIcons[0] === patt)) {
@@ -234,12 +228,40 @@
 			backdrop.show();
 		} else {
 			backdrop.hide();
+			return;
 		}
 
-		let bdims = backdrop[0].getBoundingClientRect();
+		let editorPos = editor.position();
+		let line = bdata.line;
+		let lineNumber = bdata.lineNumber;
 
-		backdrop[0].style.left = `${bdata.left}px`;
-		backdrop[0].style.top = `${bdata.top - bdims.height + 3.5}px`;
+		let editorStyle = window.getComputedStyle(editor[0]);
+
+		let font = `${editorStyle.fontSize} ${editorStyle.fontFamily}`;
+		// let padding = parseFloat(editorStyle.padding.slice(0, -2))
+
+		let fontSize = parseFloat(editorStyle.fontSize.slice(0, -2));
+
+		let editorTextWidth = Math.ceil(getTextWidth(line + ' ', font));
+		let editorTextHeight = ((lineNumber + 1) * fontSize);
+
+		// bdata.left = editorPos.left + editorTextWidth + padding;
+		// bdata.top = editorPos.top + editorTextHeight;
+
+		let bdims = backdrop[0].getBoundingClientRect();
+		let lastspan = backdrop.children().slice(-1)[0];
+		lastspan = $(lastspan).children()[0];
+
+
+		let lsdims = lastspan.getBoundingClientRect();
+
+		let leftMargin = editorPos.left + editorTextWidth;
+		let topMargin = (editorPos.top + editorTextHeight) - (bdims.height - lsdims.height) - 1.5;
+		console.log(editorPos.top, editorTextWidth, editorTextHeight, lineNumber, fontSize, bdims.height, lsdims.height);
+
+		backdrop[0].style.left = `${leftMargin}px`;
+		backdrop[0].style.top = `${topMargin}px`;
+
 	};
 
 	// TODO: change name
@@ -250,7 +272,7 @@
 	}
 
 	function setup(e) {
-		editor = $(this);
+		editor = $(e.currentTarget);
 		editor.parents('form').submit(() => {
 			bdata.display = false;
 			backdrop.hide();
@@ -258,6 +280,7 @@
 		backdrop.appendTo(editor.parent());
 	}
 
+	$('html').on('mousedown', 'textarea', setup);
 	$('html').on('focus', 'textarea', setup);
 	$('html').on('submit', 'textarea', () => {
 		bdata.display = false;
@@ -267,6 +290,7 @@
 	$('html').on('keydown', 'textarea', operate);
 	$('html').on('keypress', 'textarea', operate);
 	$('html').on('keyup', 'textarea', operate);
-	$('html').on('click', 'textarea', operate);
+	$('html').on('mousedown', 'textarea', operate);
+	$('html').on('mouseup', 'textarea', operate);
 	$('html').on('focus', 'textarea', operate);
 })();
