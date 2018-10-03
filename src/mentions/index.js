@@ -56,8 +56,6 @@
 				nlist.push(nickname);
 		});
 
-		console.log(nlist);
-
 		return nlist.sort();
 	})();
 
@@ -129,7 +127,6 @@
 
 	$('html').on('focus', 'textarea', function (e) {
 
-		console.log(e);
 		nicktable.hide();
 
 		if(editor !== null) {
