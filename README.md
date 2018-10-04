@@ -19,6 +19,10 @@ Lista actual de proyectos:
 
 - "Ocultar los hilos de los que tengas en ignorados." - *zaguarman*
 
+- "Ocultar las citas a los mensajes de los que tengo en ignorados" - *Papademos69*
+
+- "exportar/importar lista de ignorados." - *zaguarman*
+
 - "Descargar imagenes posteadas en un hilo" - *sasher*
 
 - "un boton en imdb que te busque el título en filmafinitty" - *boscorelli*
