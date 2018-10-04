@@ -1,4 +1,4 @@
-# Icon Auto complete
+# Icon Autocomplete
 
 Este script para fc añade un autocompletado de iconos cuando escribimos.
 Se activa automaticamente al escribir un ':'
