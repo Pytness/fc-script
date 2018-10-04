@@ -1,6 +1,7 @@
-#Delete Ignored Users Posts
+# Icon Auto complete
 
-Este script para fc añade un autocompletado de iconos cuando escribimos. Se activa automaticamente al escribir un ':'
+Este script para fc añade un autocompletado de iconos cuando escribimos.
+Se activa automaticamente al escribir un ':'
 
 [INSTALAR](https://github.com/Pytness/fc-script/raw/master/src/iconAutocomplete/index.user.js)
 
