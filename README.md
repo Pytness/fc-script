@@ -17,9 +17,7 @@ Lista actual de proyectos:
 
 - [ ] "repo de gifs [...]" - *iLMAO*
 
-- [x] "Ocultar los hilos de los que tengas en ignorados." - *zaguarman*
-
-- [x] "Ocultar las citas a los mensajes de los que tengo en ignorados" - *Papademos69*
+- [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/deleteIgnoredUsersPosts) "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
 
 - [ ] "exportar/importar lista de ignorados." - *zaguarman*
 
