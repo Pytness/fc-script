@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Delete Ignored Users Posts
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.01
 // @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
 // @author       Pytness
 // @match        https://www.forocoches.com/
 // @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
-// @match        https://www.forocoches.com/foro/profile.php?do=ignorelist
+// @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
+// @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
 // @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
 // @run-at       document-end
@@ -18,7 +18,12 @@
 (function () {
 	'use strict';
 
-	const USER_ID_LIST_LS_KEY = 'tm_ignored_user_list';
+	const query = s => document.querySelector(s);
+	const queryAll = s => document.querySelectorAll(s);
+
+	const USER_ID_LIST_LS_KEY = 'tm_ignored_user_id_list';
+	const USERNAME_LIST_LS_KEY = 'tm_ignored_username_list';
+	const DO_UPDATE_LS_KEY = 'tm_do_ignored_list_update';
 	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
 
 	function getajax(url, param = '') {
@@ -37,35 +42,56 @@
 		let li_list = Array.from(form.querySelectorAll('li > a'));
 
 		let temp_user_id_list = [];
+		let temp_username_list = [];
 
 		li_list.forEach(el => {
 			let uid = parseInt(el.href.split('=').slice(-1)[0]);
-			let uname = el.innerText;
+			let uname = el.innerText.trim();
+			uname = uname.trim().toLowerCase();
 
 			temp_user_id_list.push(uid);
+			temp_username_list.push(uname);
 		});
 
-		return temp_user_id_list;
+		return [temp_user_id_list, temp_username_list];
 	}
 
 	function getIgnoredUsersIdList() {
-		let user_list = localStorage.getItem(USER_ID_LIST_LS_KEY);
+		let user_id_list = localStorage.getItem(USER_ID_LIST_LS_KEY);
+		let username_list = localStorage.getItem(USERNAME_LIST_LS_KEY);
+		let do_update = localStorage.getItem(DO_UPDATE_LS_KEY);
 
-		if (user_list === null) {
-			user_list = parseIgnoredListHtml(getajax(IGNORED_USERS_URL));
-			localStorage.setItem(USER_ID_LIST_LS_KEY, JSON.stringify(user_list));
+		if ([user_id_list, username_list, do_update].includes(null) || do_update === "1") {
+
+			let response = getajax(IGNORED_USERS_URL);
+			[user_id_list, username_list] = parseIgnoredListHtml(response);
+
+			localStorage.setItem(USER_ID_LIST_LS_KEY, JSON.stringify(user_id_list));
+			localStorage.setItem(USERNAME_LIST_LS_KEY, JSON.stringify(username_list));
+			localStorage.setItem(DO_UPDATE_LS_KEY, 0);
 
 		} else {
-			user_list = JSON.parse(user_list);
+			user_id_list = JSON.parse(user_id_list);
+			username_list = JSON.parse(username_list);
 		}
 
-		return user_list;
+		return [user_id_list, username_list];
 	}
 
-	const USER_ID_LIST = getIgnoredUsersIdList();
+	const safehtml = html => {
+		html = html.replace('<', '&lt;');
+		html = html.replace('>', '&gt;');
 
-	if (location.href === 'https://www.forocoches.com/') {
-		let authors = document.querySelectorAll('.cajasnews table:not(.she) tr:not(:nth-child(1)) td:nth-child(4) a');
+		return html;
+	};
+
+	const [USER_ID_LIST, USERNAME_LIST] = getIgnoredUsersIdList();
+
+	if ((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
+		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
+	} else if (location.pathname === '/') {
+		let authors = queryAll('.cajasnews table:not(.she) tr:not(:nth-child(1)) td:nth-child(4) a');
+		if (authors === null) return;
 		authors = Array.from(authors);
 
 		authors.forEach(author => {
@@ -74,8 +100,9 @@
 				author.parentElement.parentElement.remove();
 			}
 		});
-	} else if (location.href.split('=')[0] === 'https://www.forocoches.com/foro/forumdisplay.php?f') {
-		let authors = document.querySelectorAll('#threadbits_forum_2 tr td:nth-child(3) div.smallfont span[style="cursor:pointer"]');
+	} else if (location.pathname === '/foro/forumdisplay.php') {
+		let authors = queryAll('#threadbits_forum_2 tr td:nth-child(3) div.smallfont span[style="cursor:pointer"]');
+		if (authors === null) return;
 		authors = Array.from(authors);
 
 		authors.forEach(author => {
@@ -85,6 +112,27 @@
 			if (USER_ID_LIST.includes(uid)) {
 				author.parentElement.parentElement.parentElement.remove();
 			}
-		})
+		});
+	} else if (location.pathname === "/foro/showthread.php") {
+		let authors = queryAll('td.alt2 > div > b');
+		if (authors === null) return;
+
+		authors = Array.from(authors);
+
+		authors.forEach(author => {
+			let uname = author.innerText; // possible xss injection
+			let lowerUname = uname.trim().toLowerCase();
+
+			uname = safehtml(uname);
+
+			if (USERNAME_LIST.includes(lowerUname)) {
+				let td = author.parentElement.parentElement;
+				let text = td.lastElementChild;
+
+				text.innerHTML = '<br>Este mensaje está oculto porque <b>';
+				text.innerHTML += `Este mensaje está oculto porque <b>${uname}</b> está en tu `;
+				text.innerHTML += '<a href="profile.php?do=ignorelist" target="_blank">lista de ignorados</a>';
+			}
+		});
 	}
 })();
