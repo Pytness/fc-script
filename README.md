@@ -19,7 +19,7 @@ Lista actual de proyectos:
 
 - [x] "Ocultar los hilos de los que tengas en ignorados." - *zaguarman*
 
-- [ ] "Ocultar las citas a los mensajes de los que tengo en ignorados" - *Papademos69*
+- [x] "Ocultar las citas a los mensajes de los que tengo en ignorados" - *Papademos69*
 
 - [ ] "exportar/importar lista de ignorados." - *zaguarman*
 
