@@ -101,7 +101,9 @@
 			}
 		});
 	} else if (location.pathname === '/foro/forumdisplay.php') {
-		let authors = queryAll('#threadbits_forum_2 tr td:nth-child(3) div.smallfont span[style="cursor:pointer"]');
+		let currentId = '#threadbits_forum_' + location.search.split('?f=')[1];
+		let authors = queryAll(`${currentId} span[style="cursor:pointer"]`);
+
 		if (authors === null) return;
 		authors = Array.from(authors);
 
