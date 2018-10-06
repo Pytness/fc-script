@@ -38,7 +38,7 @@
 		let parser = new DOMParser();
 		let html_doc = parser.parseFromString(html, "text/html");
 
-		let form = html_doc.querySelector('form[action="profile.php?do=updatelist&userlist=ignore"]');
+		let form = html_doc.querySelector('.userlist.floatcontainer');
 		let li_list = Array.from(form.querySelectorAll('li > a'));
 
 		let temp_user_id_list = [];
@@ -101,7 +101,6 @@
 			}
 		});
 	} else if(location.pathname === '/foro/forumdisplay.php') {
-		let id location.search.split('?f=')[1]
 		let currentId = '#threadbits_forum_' + location.search.split('?f=')[1];
 		let authors = queryAll(`${currentId} span[style="cursor:pointer"]`);
 
