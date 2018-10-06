@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Icon Autocomplete FC
-// @namespace    http://tampermonkey.net/
-// @version      1.02
 // @description  Autocomplete for icons in FC
 // @author       Pytness
+// @version      1.02
+// @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
 // @match        https://www.forocoches.com/foro/private.php*
@@ -191,7 +191,7 @@
 
 		let patt = bdata.line.substr(0, bdata.localCursor);
 
-		if (patt.indexOf(':') === -1) {
+		if(patt.indexOf(':') === -1) {
 			bdata.display = false;
 			return;
 		} else {
@@ -215,7 +215,7 @@
 			html += i != filteredIcons.length - 1 ? '<br>' : '';
 		});
 
-		if (filteredIcons.length === 0 ||
+		if(filteredIcons.length === 0 ||
 			(filteredIcons.length === 1 && filteredIcons[0] === patt)) {
 			bdata.display = false;
 		}
@@ -224,7 +224,7 @@
 	};
 
 	const updateBackdropPosition = e => {
-		if (bdata.display) {
+		if(bdata.display) {
 			backdrop.show();
 		} else {
 			backdrop.hide();
