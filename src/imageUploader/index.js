@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Image Uploader
-// @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Upload images to imgut from fc
+// @description  Upload images to imgur from fc
 // @author       Pytness
+// @version      1.0
+// @namespace    http://tampermonkey.net/
 // @resource     uploadIcon file:///home/pytness/github/fc-script/src/imageUploader/uploadIcon.gif
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*

@@ -1,16 +1,13 @@
 // ==UserScript==
-// @name         Delete Ignored Users Posts
-// @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
+// @name         Export/import Ignored User List
+// @description  Export/Import your ignored user list (@zaguarman)
 // @author       Pytness
-// @version      1.01
+// @version      0.1
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/
-// @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
-// @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
-// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
+// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.js
+// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.js
 // @run-at       document-end
 // @grant        GM_getResourceText
 // ==/UserScript==
@@ -25,6 +22,11 @@
 	const USERNAME_LIST_LS_KEY = 'tm_ignored_username_list';
 	const DO_UPDATE_LS_KEY = 'tm_do_ignored_list_update';
 	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
+
+
+	function exportUserList() {
+
+	}
 
 	function getajax(url, param = '') {
 		let ajax = new XMLHttpRequest();
@@ -101,9 +103,7 @@
 			}
 		});
 	} else if(location.pathname === '/foro/forumdisplay.php') {
-		let currentId = '#threadbits_forum_' + location.search.split('?f=')[1];
-		let authors = queryAll(`${currentId} span[style="cursor:pointer"]`);
-
+		let authors = queryAll('#threadbits_forum_2 tr td:nth-child(3) div.smallfont span[style="cursor:pointer"]');
 		if(authors === null) return;
 		authors = Array.from(authors);
 
