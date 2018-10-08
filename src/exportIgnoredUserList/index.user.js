@@ -15,126 +15,161 @@
 (function () {
 	'use strict';
 
+	const $ = jQuery;
+
 	const query = s => document.querySelector(s);
 	const queryAll = s => document.querySelectorAll(s);
 
-	const USER_ID_LIST_LS_KEY = 'tm_ignored_user_id_list';
-	const USERNAME_LIST_LS_KEY = 'tm_ignored_username_list';
-	const DO_UPDATE_LS_KEY = 'tm_do_ignored_list_update';
-	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
-
+	$('html > head').append('<style>input.button.tm {margin-left: 5px;} #importProgress {float: right;} </style>');
 
 	function exportUserList() {
+		let ul = query('.userlist.floatcontainer');
+		let inputs = Array.from(
+			ul.querySelectorAll('input[type="checkbox"]')
+		).filter(input => input.checked);
 
-	}
+		let temp_user_id_list = inputs.map(input => input.value);
+		let temp_username_list = inputs.map(input => input.parentElement.innerText.trim());
 
-	function getajax(url, param = '') {
-		let ajax = new XMLHttpRequest();
-		ajax.open('GET', url, false);
-		ajax.send();
+		let ignoredUsers = {};
 
-		return ajax.responseText;
-	}
-
-	function parseIgnoredListHtml(html) {
-		let parser = new DOMParser();
-		let html_doc = parser.parseFromString(html, "text/html");
-
-		let form = html_doc.querySelector('.userlist.floatcontainer');
-		let li_list = Array.from(form.querySelectorAll('li > a'));
-
-		let temp_user_id_list = [];
-		let temp_username_list = [];
-
-		li_list.forEach(el => {
-			let uid = parseInt(el.href.split('=').slice(-1)[0]);
-			let uname = el.innerText.trim();
-			uname = uname.trim().toLowerCase();
-
-			temp_user_id_list.push(uid);
-			temp_username_list.push(uname);
+		temp_user_id_list.forEach((id, index) => {
+			let username = temp_username_list[index];
+			ignoredUsers[id] = username;
 		});
 
-		return [temp_user_id_list, temp_username_list];
-	}
+		let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
 
-	function getIgnoredUsersIdList() {
-		let user_id_list = localStorage.getItem(USER_ID_LIST_LS_KEY);
-		let username_list = localStorage.getItem(USERNAME_LIST_LS_KEY);
-		let do_update = localStorage.getItem(DO_UPDATE_LS_KEY);
+		console.log(b64json);
 
-		if([user_id_list, username_list, do_update].includes(null) || do_update === "1") {
+		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
 
-			let response = getajax(IGNORED_USERS_URL);
-			[user_id_list, username_list] = parseIgnoredListHtml(response);
+		if (filename !== false) {
+			let downloadLink = $('<a>');
 
-			localStorage.setItem(USER_ID_LIST_LS_KEY, JSON.stringify(user_id_list));
-			localStorage.setItem(USERNAME_LIST_LS_KEY, JSON.stringify(username_list));
-			localStorage.setItem(DO_UPDATE_LS_KEY, 0);
+			downloadLink.attr('target', '_blank');
+			downloadLink.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(b64json));
+			downloadLink.attr('download', filename);
 
-		} else {
-			user_id_list = JSON.parse(user_id_list);
-			username_list = JSON.parse(username_list);
+			downloadLink.hide();
+			$('html > head').append(downloadLink);
+
+			downloadLink[0].click();
+			downloadLink.remove();
 		}
 
-		return [user_id_list, username_list];
 	}
 
-	const safehtml = html => {
-		html = html.replace('<', '&lt;');
-		html = html.replace('>', '&gt;');
+	// TODO: take care of xss when importing files
 
-		return html;
-	};
+	function importUserList() {
 
-	const [USER_ID_LIST, USERNAME_LIST] = getIgnoredUsersIdList();
+		const action = 'profile.php?do=updatelist&userlist=ignore';
 
-	if((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
-		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
-	} else if(location.pathname === '/') {
-		let authors = queryAll('.cajasnews table:not(.she) tr:not(:nth-child(1)) td:nth-child(4) a');
-		if(authors === null) return;
-		authors = Array.from(authors);
+		let fileinput = $('<input type="file">');
 
-		authors.forEach(author => {
-			let uid = parseInt(author.href.split('=').slice(-1)[0]);
-			if(USER_ID_LIST.includes(uid)) {
-				author.parentElement.parentElement.remove();
-			}
+		fileinput.on('change', function () {
+			let file = this.files[0];
+
+			let reader = new FileReader();
+
+			reader.onload = function () {
+				let content = reader.result;
+				let json;
+
+				try {
+					let decoded = atob(content);
+					json = JSON.parse(decoded);
+				} catch (e) {
+					alert('ERR_CONTENT_MALFORMED');
+					return;
+				}
+
+				let validUsers = [];
+
+				Object.keys(json).forEach(key => {
+					if (query('#user' + key) === null) {
+						validUsers.push(json[key]);
+					}
+				});
+
+				if (validUsers.length > 0) {
+					let progress = $('#importProgress');
+
+					progress.show();
+
+					let count = 0;
+					progress.text('0 / ' + validUsers.length);
+
+					validUsers.forEach(uname => {
+						let formData = new FormData(query('#ignorelist_add_form'));
+						formData.set('username', uname);
+
+						let arr = Array.from(formData);
+
+						let dataString = '';
+
+						for (let i in arr) {
+							dataString += arr[i][0] + '=' + escape(arr[i][1]) + '&';
+						}
+
+						dataString = dataString.slice(0, -1);
+
+						let ajax = new XMLHttpRequest();
+						let parser = new DOMParser();
+						let form = $('#ignorelist_change_form');
+						form.show();
+
+						ajax.open('POST', action, true);
+						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						ajax.onreadystatechange = function () {
+							if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
+								progress.text(++count + ' / ' + validUsers.length);
+
+								if (count === validUsers.length) setTimeout(() => {
+									let doc = parser.parseFromString(ajax.responseText, 'text/html');
+									let docForm = doc.querySelector('#ignorelist_change_form');
+
+									form.html(docForm.innerHTML);
+									progress.hide();
+								}, 1000);
+							}
+						};
+						ajax.send(dataString);
+					});
+
+					// progress.hide();
+				}
+
+			};
+
+			reader.readAsText(file);
+			this.remove();
 		});
-	} else if(location.pathname === '/foro/forumdisplay.php') {
-		let authors = queryAll('#threadbits_forum_2 tr td:nth-child(3) div.smallfont span[style="cursor:pointer"]');
-		if(authors === null) return;
-		authors = Array.from(authors);
 
-		authors.forEach(author => {
-			let uid = author.getAttribute('onclick').split('=').slice(-1)[0];
-			uid = parseInt(uid.split("'")[0]);
-
-			if(USER_ID_LIST.includes(uid)) {
-				author.parentElement.parentElement.parentElement.remove();
-			}
-		});
-	} else if(location.pathname === "/foro/showthread.php") {
-		let authors = queryAll('td.alt2 > div > b');
-		if(authors === null) return;
-
-		authors = Array.from(authors);
-
-		authors.forEach(author => {
-			let uname = author.innerText; // possible xss injection
-			let lowerUname = uname.trim().toLowerCase();
-
-			uname = safehtml(uname);
-
-			if(USERNAME_LIST.includes(lowerUname)) {
-				let td = author.parentElement.parentElement;
-				let text = td.lastElementChild;
-
-				text.innerHTML = '<br>Este mensaje está oculto porque <b>';
-				text.innerHTML += `Este mensaje está oculto porque <b>${uname}</b> está en tu `;
-				text.innerHTML += '<a href="profile.php?do=ignorelist" target="_blank">lista de ignorados</a>';
-			}
-		});
+		fileinput[0].click();
 	}
+
+	function insertButtons() {
+
+		let submit = $('.userlist_form_controls input[type="submit"]');
+		let exportButton = $('<input type="button" class="button tm" value="Exportar"> ');
+		let importButton = $('<input type="button" class="button tm" value="Importar"> ');
+		let progress = $('<span id="importProgress"></span>');
+
+		exportButton.on('click', exportUserList);
+		importButton.on('click', importUserList);
+
+		progress.insertAfter(submit);
+		progress.hide();
+		importButton.insertAfter(submit);
+		exportButton.insertAfter(submit);
+
+
+		// let buttonsDiv = query('.submitrow.smallfont');
+	}
+
+	window.addEventListener('load', function () {
+		insertButtons();
+	})
 })();
