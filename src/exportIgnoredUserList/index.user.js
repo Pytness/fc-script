@@ -20,7 +20,7 @@
 	const query = s => document.querySelector(s);
 	const queryAll = s => document.querySelectorAll(s);
 
-	$('html > head').append('<style>input.button.tm {margin-right: 5px; float: left;} </style>');
+	$('html > head').append('<style>input.button.tm {margin-left: 5px;} #importProgress {float: right;} </style>');
 
 	function exportUserList() {
 		let ul = query('.userlist.floatcontainer');
@@ -44,7 +44,7 @@
 
 		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
 
-		if(filename !== false) {
+		if (filename !== false) {
 			let downloadLink = $('<a>');
 
 			downloadLink.attr('target', '_blank');
@@ -64,6 +64,8 @@
 
 	function importUserList() {
 
+		const action = 'profile.php?do=updatelist&userlist=ignore';
+
 		let fileinput = $('<input type="file">');
 
 		fileinput.on('change', function () {
@@ -73,53 +75,95 @@
 
 			reader.onload = function () {
 				let content = reader.result;
-				let json = JSON.parse(atob(content));
-				console.log(json);
+				let json;
+
+				try {
+					let decoded = atob(content);
+					json = JSON.parse(decoded);
+				} catch (e) {
+					alert('ERR_CONTENT_MALFORMED');
+					return;
+				}
+
+				let validUsers = [];
+
+				Object.keys(json).forEach(key => {
+					if (query('#user' + key) === null) {
+						validUsers.push(json[key]);
+					}
+				});
+
+				if (validUsers.length > 0) {
+					let progress = $('#importProgress');
+
+					progress.show();
+
+					let count = 0;
+					progress.text('0 / ' + validUsers.length);
+
+					validUsers.forEach(uname => {
+						let formData = new FormData(query('#ignorelist_add_form'));
+						formData.set('username', uname);
+
+						let arr = Array.from(formData);
+
+						let dataString = '';
+
+						for (let i in arr) {
+							dataString += arr[i][0] + '=' + escape(arr[i][1]) + '&';
+						}
+
+						dataString = dataString.slice(0, -1);
+
+						let ajax = new XMLHttpRequest();
+						let parser = new DOMParser();
+						let form = $('#ignorelist_change_form');
+						form.show();
+
+						ajax.open('POST', action, true);
+						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						ajax.onreadystatechange = function () {
+							if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
+								progress.text(++count + ' / ' + validUsers.length);
+
+								if (count === validUsers.length) setTimeout(() => {
+									let doc = parser.parseFromString(ajax.responseText, 'text/html');
+									let docForm = doc.querySelector('#ignorelist_change_form');
+
+									form.html(docForm.innerHTML);
+									progress.hide();
+								}, 1000);
+							}
+						};
+						ajax.send(dataString);
+					});
+
+					// progress.hide();
+				}
+
 			};
 
 			reader.readAsText(file);
-
-			console.log(file);
-
-
 			this.remove();
 		});
 
 		fileinput[0].click();
-
-		// fileinput.remove();
-
-		// console.log(1);
-
-		const security_token = $('[name="securitytoken"]').val();
-		const action = 'profile.php?do=updatelist&userlist=ignore';
-
-		console.log(security_token);
-
-		$.ajax({
-			type: "POST",
-			url: action,
-			data: {
-				s: '',
-				securitytoken: security_token,
-				do: 'updatelist',
-				userlist: 'ignore',
-				username: '30cm',
-			}
-		});
 	}
 
 	function insertButtons() {
 
-		let submit = $('.submitrow.smallfont > input');
+		let submit = $('.userlist_form_controls input[type="submit"]');
 		let exportButton = $('<input type="button" class="button tm" value="Exportar"> ');
 		let importButton = $('<input type="button" class="button tm" value="Importar"> ');
+		let progress = $('<span id="importProgress"></span>');
 
 		exportButton.on('click', exportUserList);
 		importButton.on('click', importUserList);
 
-		exportButton.insertBefore(submit);
-		importButton.insertBefore(submit);
+		progress.insertAfter(submit);
+		progress.hide();
+		importButton.insertAfter(submit);
+		exportButton.insertAfter(submit);
 
 
 		// let buttonsDiv = query('.submitrow.smallfont');
