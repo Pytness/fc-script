@@ -21,7 +21,7 @@ Lista actual de proyectos:
 
 - [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/exportIgnoredUserList) "exportar/importar lista de ignorados." - *zaguarman*
 
-- [ ] "Descargar imagenes posteadas en un hilo" - *sasher*
+- [ ] "Descargar imagenes posteadas en un hilo" - *sasher*, *StephenWalking*
 
 - [ ] "un boton en imdb que te busque el título en filmafinitty" - *boscorelli*
 
