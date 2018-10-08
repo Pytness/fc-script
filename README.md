@@ -29,6 +29,8 @@ Lista actual de proyectos:
 
 - [ ] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
 
+- [ ] "Auto up de hilos cada X horas" - *eNeko*
+
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
 
