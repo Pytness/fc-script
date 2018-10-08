@@ -1,3 +1,7 @@
 input.button.tm {
-	margin-right: 5px;
+	margin-left: 5px;
+}
+
+#importProgress {
+	float: right;
 }

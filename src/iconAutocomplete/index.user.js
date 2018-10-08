@@ -8,8 +8,8 @@
 // @match        https://www.forocoches.com/foro/newreply.php*
 // @match        https://www.forocoches.com/foro/private.php*
 // @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
-// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.js
-// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.js
+// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
+// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
 // @run-at       document-end
 // @grant        GM_getResourceText
 // ==/UserScript==
@@ -191,7 +191,7 @@
 
 		let patt = bdata.line.substr(0, bdata.localCursor);
 
-		if(patt.indexOf(':') === -1) {
+		if (patt.indexOf(':') === -1) {
 			bdata.display = false;
 			return;
 		} else {
@@ -215,7 +215,7 @@
 			html += i != filteredIcons.length - 1 ? '<br>' : '';
 		});
 
-		if(filteredIcons.length === 0 ||
+		if (filteredIcons.length === 0 ||
 			(filteredIcons.length === 1 && filteredIcons[0] === patt)) {
 			bdata.display = false;
 		}
@@ -224,7 +224,7 @@
 	};
 
 	const updateBackdropPosition = e => {
-		if(bdata.display) {
+		if (bdata.display) {
 			backdrop.show();
 		} else {
 			backdrop.hide();
