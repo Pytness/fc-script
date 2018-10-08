@@ -19,7 +19,7 @@ Lista actual de proyectos:
 
 - [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/deleteIgnoredUsersPosts) "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
 
-- [ ] "exportar/importar lista de ignorados." - *zaguarman*
+- [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/exportIgnoredUserList) "exportar/importar lista de ignorados." - *zaguarman*
 
 - [ ] "Descargar imagenes posteadas en un hilo" - *sasher*
 

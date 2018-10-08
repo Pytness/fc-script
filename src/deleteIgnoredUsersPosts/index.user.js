@@ -9,8 +9,8 @@
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
-// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.js
+// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.user.js
+// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.user.js
 // @run-at       document-end
 // @grant        GM_getResourceText
 // ==/UserScript==
@@ -61,7 +61,7 @@
 		let username_list = localStorage.getItem(USERNAME_LIST_LS_KEY);
 		let do_update = localStorage.getItem(DO_UPDATE_LS_KEY);
 
-		if([user_id_list, username_list, do_update].includes(null) || do_update === "1") {
+		if ([user_id_list, username_list, do_update].includes(null) || do_update === "1") {
 
 			let response = getajax(IGNORED_USERS_URL);
 			[user_id_list, username_list] = parseIgnoredListHtml(response);
@@ -87,37 +87,37 @@
 
 	const [USER_ID_LIST, USERNAME_LIST] = getIgnoredUsersIdList();
 
-	if((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
+	if ((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
 		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
-	} else if(location.pathname === '/') {
+	} else if (location.pathname === '/') {
 		let authors = queryAll('.cajasnews table:not(.she) td:nth-child(4) a');
-		if(authors === null) return;
+		if (authors === null) return;
 		authors = Array.from(authors);
 
 		authors.forEach(author => {
 			let uid = parseInt(author.href.split('=').slice(-1)[0]);
-			if(USER_ID_LIST.includes(uid)) {
+			if (USER_ID_LIST.includes(uid)) {
 				author.parentElement.parentElement.remove();
 			}
 		});
-	} else if(location.pathname === '/foro/forumdisplay.php') {
+	} else if (location.pathname === '/foro/forumdisplay.php') {
 		let currentId = '#threadbits_forum_' + location.search.split('?f=')[1];
 		let authors = queryAll(`${currentId} span[style="cursor:pointer"]`);
 
-		if(authors === null) return;
+		if (authors === null) return;
 		authors = Array.from(authors);
 
 		authors.forEach(author => {
 			let uid = author.getAttribute('onclick').split('=').slice(-1)[0];
 			uid = parseInt(uid.split("'")[0]);
 
-			if(USER_ID_LIST.includes(uid)) {
+			if (USER_ID_LIST.includes(uid)) {
 				author.parentElement.parentElement.parentElement.remove();
 			}
 		});
-	} else if(location.pathname === "/foro/showthread.php") {
+	} else if (location.pathname === "/foro/showthread.php") {
 		let authors = queryAll('td.alt2 > div > b');
-		if(authors === null) return;
+		if (authors === null) return;
 
 		authors = Array.from(authors);
 
@@ -127,7 +127,7 @@
 
 			uname = safehtml(uname);
 
-			if(USERNAME_LIST.includes(lowerUname)) {
+			if (USERNAME_LIST.includes(lowerUname)) {
 				let td = author.parentElement.parentElement;
 				let text = td.lastElementChild;
 
