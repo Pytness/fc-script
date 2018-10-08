@@ -90,7 +90,7 @@
 	if((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
 		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
 	} else if(location.pathname === '/') {
-		let authors = queryAll('.cajasnews table:not(.she) tr:not(:nth-child(1)) td:nth-child(4) a');
+		let authors = queryAll('.cajasnews table:not(.she) td:nth-child(4) a');
 		if(authors === null) return;
 		authors = Array.from(authors);
 
