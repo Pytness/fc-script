@@ -36,9 +36,9 @@ Lista actual de proyectos:
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
 
-[deleteIgnoredUsersPosts link]: https://github.com/Pytness/fc-script/tree/improvements/src/deleteIgnoredUsersPosts
-[exportIgnoredUserList link]: https://github.com/Pytness/fc-script/tree/improvements/src/exportIgnoredUserList
-[iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/improvements/src/iconAutocomplete
+[deleteIgnoredUsersPosts link]: https://github.com/Pytness/fc-script/tree/master/src/deleteIgnoredUsersPosts
+[exportIgnoredUserList link]: https://github.com/Pytness/fc-script/tree/master/src/exportIgnoredUserList
+[iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/iconAutocomplete
 
 
 By @Pytness (Chilypicantito)
