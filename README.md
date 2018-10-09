@@ -5,6 +5,8 @@ Scripts para forocoches.com, algunos completamente absurdos, otros que añaden f
 
 Lista actual de proyectos:
 
+- [x] [[link]][iconAutocomplete link] "autocompletado de iconos" - *ChilyPicantito*
+
 - [ ] "Haz uno para cagarnos en tu madre" - *ContactoCero*
 
 - [ ] "Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*
@@ -17,9 +19,9 @@ Lista actual de proyectos:
 
 - [ ] "repo de gifs [...]" - *iLMAO*
 
-- [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/deleteIgnoredUsersPosts) "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
+- [x] [[link]][deleteIgnoredUsersPosts link] "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
 
-- [x] [[link]](https://github.com/Pytness/fc-script/tree/improvements/src/exportIgnoredUserList) "exportar/importar lista de ignorados." - *zaguarman*
+- [x] [[link]][exportIgnoredUserList link] "exportar/importar lista de ignorados." - *zaguarman*
 
 - [ ] "Descargar imagenes posteadas en un hilo" - *sasher*, *StephenWalking*
 
@@ -32,6 +34,11 @@ Lista actual de proyectos:
 - [ ] "Auto up de hilos cada X horas" - *eNeko*
 
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
+
+
+[deleteIgnoredUsersPosts link]: https://github.com/Pytness/fc-script/tree/improvements/src/deleteIgnoredUsersPosts
+[exportIgnoredUserList link]: https://github.com/Pytness/fc-script/tree/improvements/src/exportIgnoredUserList
+[iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/improvements/src/iconAutocomplete
 
 
 By @Pytness (Chilypicantito)
