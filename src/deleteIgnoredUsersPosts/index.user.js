@@ -2,7 +2,7 @@
 // @name         Delete Ignored Users Posts
 // @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
 // @author       Pytness
-// @version      1.01
+// @version      1.02
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/
 // @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
@@ -131,8 +131,8 @@
 				let td = author.parentElement.parentElement;
 				let text = td.lastElementChild;
 
-				text.innerHTML = '<br>Este mensaje está oculto porque <b>';
-				text.innerHTML += `Este mensaje está oculto porque <b>${uname}</b> está en tu `;
+				text.innerHTML = '<br>Este mensaje está oculto porque ';
+				text.innerHTML += `<b>${uname}</b> está en tu `;
 				text.innerHTML += '<a href="profile.php?do=ignorelist" target="_blank">lista de ignorados</a>';
 			}
 		});
