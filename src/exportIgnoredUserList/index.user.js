@@ -2,7 +2,7 @@
 // @name         Export/import Ignored User List
 // @description  Export/Import your ignored user list (@zaguarman)
 // @author       Pytness
-// @version      0.1
+// @version      1.01
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
@@ -23,10 +23,12 @@
 	$('html > head').append('<style>input.button.tm {margin-left: 5px;} #importProgress {float: right;} </style>');
 
 	function exportUserList() {
-		let ul = query('.userlist.floatcontainer');
+
 		let inputs = Array.from(
-			ul.querySelectorAll('input[type="checkbox"]')
+			$('.userlist.floatcontainer input[type="checkbox"]')
 		).filter(input => input.checked);
+
+		if(inputs.length === 0) return false;
 
 		let temp_user_id_list = inputs.map(input => input.value);
 		let temp_username_list = inputs.map(input => input.parentElement.innerText.trim());
@@ -40,22 +42,30 @@
 
 		let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
 
-		console.log(b64json);
-
 		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
 
-		if (filename !== false) {
+		if(filename !== null) {
 			let downloadLink = $('<a>');
 
+			let blob = new Blob([b64json], {
+				type: "text/plain;charset=utf-8"
+			});
+
+			blob = URL.createObjectURL(blob);
+
 			downloadLink.attr('target', '_blank');
-			downloadLink.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(b64json));
 			downloadLink.attr('download', filename);
+			downloadLink.attr('href', blob);
 
 			downloadLink.hide();
 			$('html > head').append(downloadLink);
 
 			downloadLink[0].click();
 			downloadLink.remove();
+
+			setTimeout(function () {
+				URL.revokeObjectURL(blob);
+			}, 10000) // 40s
 		}
 
 	}
@@ -81,19 +91,19 @@
 					let decoded = atob(content);
 					json = JSON.parse(decoded);
 				} catch (e) {
-					alert('ERR_CONTENT_MALFORMED');
+					alert('ERR_MALFORMED_CONTENT');
 					return;
 				}
 
 				let validUsers = [];
 
 				Object.keys(json).forEach(key => {
-					if (query('#user' + key) === null) {
+					if(query('#user' + key) === null) {
 						validUsers.push(json[key]);
 					}
 				});
 
-				if (validUsers.length > 0) {
+				if(validUsers.length > 0) {
 					let progress = $('#importProgress');
 
 					progress.show();
@@ -109,38 +119,46 @@
 
 						let dataString = '';
 
-						for (let i in arr) {
+						for(let i in arr) {
 							dataString += arr[i][0] + '=' + escape(arr[i][1]) + '&';
 						}
 
 						dataString = dataString.slice(0, -1);
 
 						let ajax = new XMLHttpRequest();
-						let parser = new DOMParser();
 						let form = $('#ignorelist_change_form');
 						form.show();
 
 						ajax.open('POST', action, true);
 						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 						ajax.onreadystatechange = function () {
-							if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
-								progress.text(++count + ' / ' + validUsers.length);
+							if(ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
+								progress.text(`(${uname}) ` + (++count) + ' / ' + validUsers.length);
 
-								if (count === validUsers.length) setTimeout(() => {
-									let doc = parser.parseFromString(ajax.responseText, 'text/html');
-									let docForm = doc.querySelector('#ignorelist_change_form');
+								if(count === validUsers.length) {
+									setTimeout(function () {
+										let parser = new DOMParser();
+										let doc = parser.parseFromString(ajax.responseText, 'text/html');
+										let docForm = doc.querySelector('#ignorelist_change_form');
 
-									form.html(docForm.innerHTML);
-									progress.hide();
-								}, 1000);
+										form.html(docForm.innerHTML);
+										progress.hide();
+
+										// Enable "select all"
+										$('#ignorelist_checkall').change(function (e) {
+											let state = this.checked;
+											let checkboxes = $('input[type="checkbox"]');
+											Array.from(checkboxes).forEach(el => {
+												el.checked = state;
+											})
+										});
+									}, 1000);
+								}
 							}
 						};
 						ajax.send(dataString);
 					});
-
-					// progress.hide();
 				}
-
 			};
 
 			reader.readAsText(file);
@@ -164,12 +182,9 @@
 		progress.hide();
 		importButton.insertAfter(submit);
 		exportButton.insertAfter(submit);
-
-
-		// let buttonsDiv = query('.submitrow.smallfont');
 	}
 
 	window.addEventListener('load', function () {
 		insertButtons();
-	})
+	});
 })();
