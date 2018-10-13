@@ -40,22 +40,32 @@
 
 		let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
 
-		console.log(b64json);
 
 		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
 
-		if (filename !== false) {
+		if(filename !== false) {
 			let downloadLink = $('<a>');
 
+			let blob = new Blob([b64json], {
+				type: "text/plain;charset=utf-8"
+			});
+
+			// Thanks to https://github.com/eligrey/FileSaver.js/
+			blob = URL.createObjectURL(blob);
+
 			downloadLink.attr('target', '_blank');
-			downloadLink.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(b64json));
 			downloadLink.attr('download', filename);
+			downloadLink.attr('href', blob);
 
 			downloadLink.hide();
 			$('html > head').append(downloadLink);
 
 			downloadLink[0].click();
 			downloadLink.remove();
+
+			setTimeout(function () {
+				URL.revokeObjectURL(blob);
+			}, 4E4) // 40s
 		}
 
 	}
@@ -88,12 +98,12 @@
 				let validUsers = [];
 
 				Object.keys(json).forEach(key => {
-					if (query('#user' + key) === null) {
+					if(query('#user' + key) === null) {
 						validUsers.push(json[key]);
 					}
 				});
 
-				if (validUsers.length > 0) {
+				if(validUsers.length > 0) {
 					let progress = $('#importProgress');
 
 					progress.show();
@@ -109,7 +119,7 @@
 
 						let dataString = '';
 
-						for (let i in arr) {
+						for(let i in arr) {
 							dataString += arr[i][0] + '=' + escape(arr[i][1]) + '&';
 						}
 
@@ -123,10 +133,10 @@
 						ajax.open('POST', action, true);
 						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 						ajax.onreadystatechange = function () {
-							if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
+							if(ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
 								progress.text(++count + ' / ' + validUsers.length);
 
-								if (count === validUsers.length) setTimeout(() => {
+								if(count === validUsers.length) setTimeout(() => {
 									let doc = parser.parseFromString(ajax.responseText, 'text/html');
 									let docForm = doc.querySelector('#ignorelist_change_form');
 
