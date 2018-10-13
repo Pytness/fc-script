@@ -2,7 +2,7 @@
 // @name         Export/import Ignored User List
 // @description  Export/Import your ignored user list (@zaguarman)
 // @author       Pytness
-// @version      0.1
+// @version      1.01
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
