@@ -23,10 +23,12 @@
 	$('html > head').append('<style>input.button.tm {margin-left: 5px;} #importProgress {float: right;} </style>');
 
 	function exportUserList() {
-		let ul = query('.userlist.floatcontainer');
+
 		let inputs = Array.from(
-			ul.querySelectorAll('input[type="checkbox"]')
+			$('.userlist.floatcontainer input[type="checkbox"]')
 		).filter(input => input.checked);
+
+		if(inputs.length === 0) return false;
 
 		let temp_user_id_list = inputs.map(input => input.value);
 		let temp_username_list = inputs.map(input => input.parentElement.innerText.trim());
@@ -40,17 +42,15 @@
 
 		let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
 
-
 		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
 
-		if(filename !== false) {
+		if(filename !== null) {
 			let downloadLink = $('<a>');
 
 			let blob = new Blob([b64json], {
 				type: "text/plain;charset=utf-8"
 			});
 
-			// Thanks to https://github.com/eligrey/FileSaver.js/
 			blob = URL.createObjectURL(blob);
 
 			downloadLink.attr('target', '_blank');
@@ -65,7 +65,7 @@
 
 			setTimeout(function () {
 				URL.revokeObjectURL(blob);
-			}, 4E4) // 40s
+			}, 10000) // 40s
 		}
 
 	}
@@ -91,7 +91,7 @@
 					let decoded = atob(content);
 					json = JSON.parse(decoded);
 				} catch (e) {
-					alert('ERR_CONTENT_MALFORMED');
+					alert('ERR_MALFORMED_CONTENT');
 					return;
 				}
 
@@ -126,7 +126,6 @@
 						dataString = dataString.slice(0, -1);
 
 						let ajax = new XMLHttpRequest();
-						let parser = new DOMParser();
 						let form = $('#ignorelist_change_form');
 						form.show();
 
@@ -134,23 +133,32 @@
 						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 						ajax.onreadystatechange = function () {
 							if(ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
-								progress.text(++count + ' / ' + validUsers.length);
+								progress.text(`(${uname}) ` + (++count) + ' / ' + validUsers.length);
 
-								if(count === validUsers.length) setTimeout(() => {
-									let doc = parser.parseFromString(ajax.responseText, 'text/html');
-									let docForm = doc.querySelector('#ignorelist_change_form');
+								if(count === validUsers.length) {
+									setTimeout(function () {
+										let parser = new DOMParser();
+										let doc = parser.parseFromString(ajax.responseText, 'text/html');
+										let docForm = doc.querySelector('#ignorelist_change_form');
 
-									form.html(docForm.innerHTML);
-									progress.hide();
-								}, 1000);
+										form.html(docForm.innerHTML);
+										progress.hide();
+
+										// Enable "select all"
+										$('#ignorelist_checkall').change(function (e) {
+											let state = this.checked;
+											let checkboxes = $('input[type="checkbox"]');
+											Array.from(checkboxes).forEach(el => {
+												el.checked = state;
+											})
+										});
+									}, 1000);
+								}
 							}
 						};
 						ajax.send(dataString);
 					});
-
-					// progress.hide();
 				}
-
 			};
 
 			reader.readAsText(file);
@@ -174,12 +182,9 @@
 		progress.hide();
 		importButton.insertAfter(submit);
 		exportButton.insertAfter(submit);
-
-
-		// let buttonsDiv = query('.submitrow.smallfont');
 	}
 
 	window.addEventListener('load', function () {
 		insertButtons();
-	})
+	});
 })();
