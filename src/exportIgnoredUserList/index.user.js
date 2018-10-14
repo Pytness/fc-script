@@ -2,14 +2,17 @@
 // @name         Export/import Ignored User List
 // @description  Export/Import your ignored user list (@zaguarman)
 // @author       Pytness
-// @version      1.01
+// @version      1.02
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @resource     stylesheet https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/main.css
 // @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.user.js
 // @run-at       document-end
 // @grant        GM_getResourceText
+// @grant        GM_info
+// @grant        unsafeWindow
 // ==/UserScript==
 
 (function () {
@@ -20,61 +23,95 @@
 	const query = s => document.querySelector(s);
 	const queryAll = s => document.querySelectorAll(s);
 
-	$('html > head').append('<style>input.button.tm {margin-left: 5px;} #importProgress {float: right;} </style>');
+	$('html > head').append(`<style>${GM_getResourceText('stylesheet')}</style>`);
 
 	function exportUserList() {
 
-		let inputs = Array.from(
-			$('.userlist.floatcontainer input[type="checkbox"]')
-		).filter(input => input.checked);
+		let inputs = $('#ignoredlist input[type="checkbox"]');
+		inputs = inputs.toArray().filter(input => input.checked);
 
-		if(inputs.length === 0) return false;
+		if(inputs.length !== 0) {
 
-		let temp_user_id_list = inputs.map(input => input.value);
-		let temp_username_list = inputs.map(input => input.parentElement.innerText.trim());
+			let ignoredUsers = {};
 
-		let ignoredUsers = {};
+			inputs.forEach(input => {
+				let user_id = input.value;
+				let username = input.parentElement.innerText.trim();
+				username = encodeURIComponent(username);
 
-		temp_user_id_list.forEach((id, index) => {
-			let username = temp_username_list[index];
-			ignoredUsers[id] = username;
-		});
-
-		let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
-
-		let filename = prompt('Nombre del archivo: ', 'ignoredusers.export');
-
-		if(filename !== null) {
-			let downloadLink = $('<a>');
-
-			let blob = new Blob([b64json], {
-				type: "text/plain;charset=utf-8"
+				ignoredUsers[user_id] = username;
 			});
 
-			blob = URL.createObjectURL(blob);
+			let b64json = window.btoa(JSON.stringify(ignoredUsers)); //
 
-			downloadLink.attr('target', '_blank');
-			downloadLink.attr('download', filename);
-			downloadLink.attr('href', blob);
+			let filename = prompt('Nombre del archivo:', 'ignoredusers.export');
 
-			downloadLink.hide();
-			$('html > head').append(downloadLink);
+			if(filename !== null) {
+				let downloadLink = $('<a>');
 
-			downloadLink[0].click();
-			downloadLink.remove();
+				let blob = new Blob([b64json], {
+					type: "text/plain;charset=utf-8"
+				});
 
-			setTimeout(function () {
-				URL.revokeObjectURL(blob);
-			}, 10000) // 40s
+				blob = URL.createObjectURL(blob);
+
+				downloadLink.attr('target', '_blank');
+				downloadLink.attr('download', filename);
+				downloadLink.attr('href', blob);
+
+				downloadLink.hide();
+				$('html > head').append(downloadLink);
+
+				downloadLink[0].click();
+				downloadLink.remove();
+
+				setTimeout(function () {
+					URL.revokeObjectURL(blob);
+				}, 10000);
+			}
 		}
-
 	}
 
-	// TODO: take care of xss when importing files
+	function updateUserList(uid, uname) {
+		let ul = $('#ignorelist');
+
+		if(ul.length === 0) {
+			$('<ul class="userlist floatcontainer" id="ignorelist">').insertBefore($('#ignorelist_change_form .submitrow.smallfont'));
+			ul = $('#ignorelist');
+		}
+
+		if($(`#user${uid}`).length === 0) {
+			let li_list = $('#ignorelist li');
+
+			let li = (() => {
+				let li = $(`<li id="user${uid}">`);
+				let checkbox = $(`<input type="checkbox" name="listbits[ignore][${uid}]" id="usercheck_${uid}" value="${uid}" checked="checked">`);
+				let anchor = $(`<a href="member.php?u=${uid}">${uname}</a>`);
+				let hidden = $(`<input type="hidden" name="listbits[ignore_original][${uid}]" value="${uid}">`);
+
+				li.append(checkbox);
+				li.append(anchor);
+				li.append(hidden);
+
+				return li;
+			})();
+
+			li_list = li_list.toArray();
+			li_list.push(li);
+
+			li_list.sort((a, b) => {
+				let a_uname = $(a).find('a').text();
+				let b_uname = $(b).find('a').text();
+
+				return a_uname.localeCompare(b_uname);
+			});
+
+			ul.empty();
+			li_list.forEach(el => ul.append(el));
+		}
+	}
 
 	function importUserList() {
-
-		const action = 'profile.php?do=updatelist&userlist=ignore';
 
 		let fileinput = $('<input type="file">');
 
@@ -98,50 +135,50 @@
 				let validUsers = [];
 
 				Object.keys(json).forEach(key => {
-					if(query('#user' + key) === null) {
-						validUsers.push(json[key]);
+					if($(`#user${key}`).length === 0) {
+						validUsers.push([key, decodeURIComponent(json[key])]);
 					}
 				});
 
 				if(validUsers.length > 0) {
-					let progress = $('#importProgress');
 
+					validUsers.sort((a, b) => a[1].localeCompare(b[1]));
+
+					let progress = $('#importProgress');
+					progress.text(`0 / ${validUsers.length}`);
 					progress.show();
 
 					let count = 0;
-					progress.text('0 / ' + validUsers.length);
 
-					validUsers.forEach(uname => {
-						let formData = new FormData(query('#ignorelist_add_form'));
+					validUsers.forEach(([uid, uname]) => {
+						let formData = new FormData($('#ignorelist_add_form')[0]);
 						formData.set('username', uname);
 
-						let arr = Array.from(formData);
-
+						formData = Array.from(formData);
 						let dataString = '';
 
-						for(let i in arr) {
-							dataString += arr[i][0] + '=' + escape(arr[i][1]) + '&';
-						}
+						formData.forEach(([key, value]) => {
+							dataString += `${key}=${escape(value)}&`;
+						});
 
 						dataString = dataString.slice(0, -1);
 
 						let ajax = new XMLHttpRequest();
 						let form = $('#ignorelist_change_form');
+
 						form.show();
 
-						ajax.open('POST', action, true);
+						ajax.open('POST', 'profile.php?do=updatelist&userlist=ignore', true);
 						ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
 						ajax.onreadystatechange = function () {
 							if(ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
-								progress.text(`(${uname}) ` + (++count) + ' / ' + validUsers.length);
+
+								progress.text(`(${uname}) ${++count} / ${validUsers.length}`);
+								updateUserList(uid, uname);
 
 								if(count === validUsers.length) {
 									setTimeout(function () {
-										let parser = new DOMParser();
-										let doc = parser.parseFromString(ajax.responseText, 'text/html');
-										let docForm = doc.querySelector('#ignorelist_change_form');
-
-										form.html(docForm.innerHTML);
 										progress.hide();
 
 										// Enable "select all"
@@ -156,6 +193,7 @@
 								}
 							}
 						};
+
 						ajax.send(dataString);
 					});
 				}
@@ -179,12 +217,20 @@
 		importButton.on('click', importUserList);
 
 		progress.insertAfter(submit);
-		progress.hide();
 		importButton.insertAfter(submit);
 		exportButton.insertAfter(submit);
+
+		progress.hide();
 	}
 
 	window.addEventListener('load', function () {
+
+		console.log('Loaded:\n' +
+			`\tName    :    ${GM_info.script.name}\n` +
+			`\tVersion :    ${GM_info.script.version}\n` +
+			`\tAuthor  :    ${GM_info.script.author}`
+		);
+
 		insertButtons();
 	});
 })();
