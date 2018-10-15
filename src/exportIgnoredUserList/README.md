@@ -3,6 +3,7 @@
 Este script para fc te permite exportar e importar tu lista de usuarios ignorados.
 
 #### Exportar:
+  - *UNA LISTA DE IGNORADOS MUY GRANDE PUEDE RESULTAR EN UN HTTP_ERROR_FORBIDDEN*
   - Selecciona en tu lista de ignorados los usuarios que quieras exportar.
   - Presiona el botón "Exportar".
   - Elige el nombre de archivo en el que se exportará los usuarios seleccionados.
