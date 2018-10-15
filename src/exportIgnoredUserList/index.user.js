@@ -2,7 +2,7 @@
 // @name         Export/import Ignored User List
 // @description  Export/Import your ignored user list (@zaguarman)
 // @author       Pytness
-// @version      1.02
+// @version      1.03
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
@@ -27,7 +27,7 @@
 
 	function exportUserList() {
 
-		let inputs = $('#ignoredlist input[type="checkbox"]');
+		let inputs = $('#ignorelist input[type="checkbox"]');
 		inputs = inputs.toArray().filter(input => input.checked);
 
 		if(inputs.length !== 0) {
