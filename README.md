@@ -17,7 +17,7 @@ Lista actual de proyectos:
 
 - [ ] "Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*
 
-- [ ] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario *
+- [ ] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
 - [ ] "Integra un botón de subida de imágenes, y otro de audios. Integra los flv" - *Keli*
 
