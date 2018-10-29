@@ -39,6 +39,10 @@ Lista actual de proyectos:
 
 - [ ] "Haz uno para poder copiar las URL de las imágenes desde el móvil" - *Sloquehay*
 
+- [ ] "borrar todos los tus mensajes escritos" - *LeShamisen*
+
+- [ ] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
+
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
 
