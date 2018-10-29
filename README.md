@@ -35,7 +35,9 @@ Lista actual de proyectos:
 
 - [ ] "Etiquetar usuarios" - *CurlPHP*
 
-- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - Myth631
+- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
+
+- [ ] "Haz uno para poder copiar las URL de las imágenes desde el móvil" - *Sloquehay*
 
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
