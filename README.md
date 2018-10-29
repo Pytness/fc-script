@@ -11,11 +11,9 @@ Lista actual de proyectos:
 
 - [x] [[link]][exportIgnoredUserList link] "exportar/importar lista de ignorados." - *zaguarman*
 
-- [ ] "Haz uno para cagarnos en tu madre" - *ContactoCero*
+- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
 
-- [ ] "Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*
-
-- [ ] "Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*
+- [ ] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
 - [ ] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
@@ -35,13 +33,16 @@ Lista actual de proyectos:
 
 - [ ] "Etiquetar usuarios" - *CurlPHP*
 
-- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
-
 - [ ] "Haz uno para poder copiar las URL de las imágenes desde el móvil" - *Sloquehay*
 
 - [ ] "borrar todos los tus mensajes escritos" - *LeShamisen*
 
-- [ ] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
+- [ ] "Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*
+
+- [ ] "Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*
+
+
+- [ ] ~~"Haz uno para cagarnos en tu madre" - *ContactoCero*~~
 
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
