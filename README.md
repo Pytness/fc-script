@@ -7,6 +7,8 @@ Lista actual de proyectos:
 
 - [x] [[link]][iconAutocomplete link] "autocompletado de iconos" - *ChilyPicantito*
 
+- [x] [[link]][mentionsAutocomplete link] "autocompletado de nicks para menciones" - *ChilyPicantito y Siralos*
+
 - [x] [[link]][deleteIgnoredUsersPosts link] "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
 
 - [x] [[link]][exportIgnoredUserList link] "exportar/importar lista de ignorados." - *zaguarman*
@@ -50,6 +52,6 @@ Lista actual de proyectos:
 [deleteIgnoredUsersPosts link]: https://github.com/Pytness/fc-script/tree/master/src/deleteIgnoredUsersPosts
 [exportIgnoredUserList link]: https://github.com/Pytness/fc-script/tree/master/src/exportIgnoredUserList
 [iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/iconAutocomplete
-
+[mentionsAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/mentions
 
 By @Pytness (Chilypicantito)
