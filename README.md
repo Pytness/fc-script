@@ -23,8 +23,6 @@ Lista actual de proyectos:
 
 - [ ] "repo de gifs [...]" - *iLMAO*
 
-
-
 - [ ] "Descargar imagenes posteadas en un hilo" - *sasher*, *StephenWalking*
 
 - [ ] "un boton en imdb que te busque el título en filmafinitty" - *boscorelli*
@@ -36,6 +34,8 @@ Lista actual de proyectos:
 - [ ] "Auto up de hilos cada X horas" - *eNeko*
 
 - [ ] "Etiquetar usuarios" - *CurlPHP*
+
+- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - Myth631
 
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
