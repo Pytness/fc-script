@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Highlight Dangerous Posts
-// @description  Este script destaca los hilos que sean +18, +nsfw, +serio
-// @author       comandantexd AKA nurbian
+// @description  Este script destaca los hilos que sean +18, +16, +14, +nsfw, +serio
+// @author       comandantexd
 // @version      1.0
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/
@@ -11,33 +11,32 @@
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/highlightDangerousPosts/index.user.js
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+	'use strict';
 
-    const $ = jQuery;
-    const PATH = location.pathname;
+	const $ = jQuery;
+	const PATH = location.pathname;
 
-    var rowsSelected;
-    var regularSel;
+	let rowsSelected;
+	let regularSel;
 
-    $.expr[':'].icontains = function(a, i, m) {
-        return jQuery(a).text().toUpperCase()
-        .indexOf(m[3].toUpperCase()) >= 0;
-    };0
+	$.expr[':'].icontains = function (a, i, m) {
+		return jQuery(a).text().toUpperCase()
+			.indexOf(m[3].toUpperCase()) >= 0;
+	};
 
-    if (PATH == "/foro/forumdisplay.php"){
-        regularSel = "a:icontains('+18'), a:icontains('+16'), a:icontains('+14'), a:icontains('+nsfw')," +
-            "a:icontains('+serio'), a:icontains('tema serio'), a:icontains('temaserio')";
-        rowsSelected = $( regularSel ).parent().parent();
-        console.log(rowsSelected);
-    } else {
-        regularSel = "a[title*='+18' i], a[title*='+16' i], a[title*='+14' i], a[title*='+nsfw' i]," +
-        "a[title*='+serio' i], a[title*='tema serio' i], a[title*='temaserio' i]";
-        rowsSelected = $( regularSel ).parent();
-    }
+	const flags = ['+18', '+16', '+14', '+nsfw', 'nsfw', '+serio', 'tema serio', 'temaserio'];
 
-    rowsSelected.css({
-        backgroundColor: '#ffcdba',
-        textDecoration: 'underline'
-    });
+	if (PATH == "/foro/forumdisplay.php") {
+		regularSel = flags.map(f => `a:icontains('${f}')`).join(', ');
+		rowsSelected = $(regularSel).parent().parent();
+	} else {
+		regularSel = flags.map(f => `a[title*='${f}' i]`).join(', ');
+		rowsSelected = $(regularSel).parent();
+	}
+
+	rowsSelected.css({
+		backgroundColor: '#FFD7D1',
+		textDecoration: 'underline'
+	});
 })();
