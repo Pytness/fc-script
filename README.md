@@ -14,7 +14,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][continuousScroll link] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
 
-- [ ] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
+- [x] [[link]][highlight_dp link] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
 - [ ] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
@@ -52,5 +52,6 @@ Lista actual de proyectos:
 [iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/iconAutocomplete
 [mentionsAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/mentions
 [continuousScroll link]: https://github.com/Pytness/fc-script/tree/master/src/continuousScroll
+[highlight_dp link]: https://github.com/Pytness/fc-script/tree/master/src/highlightDangerousPosts
 
 By @Pytness (Chilypicantito)
