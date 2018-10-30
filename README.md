@@ -54,4 +54,7 @@ Lista actual de proyectos:
 [continuousScroll link]: https://github.com/Pytness/fc-script/tree/master/src/continuousScroll
 [highlight_dp link]: https://github.com/Pytness/fc-script/tree/master/src/highlightDangerousPosts
 
-By @Pytness (Chilypicantito)
+#### Authors:
+- Pytness      => ~~@Chilypicantito~~ @mondflug
+- Siralosmdk   => @Siralos
+- comandantexd => @nurbian
