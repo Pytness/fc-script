@@ -1,5 +1,7 @@
 # Export/Import Ignored User List
 
+[INSTALAR](https://github.com/Pytness/fc-script/raw/master/src/exportIgnoredUserList/index.user.js)
+
 Este script para fc te permite exportar e importar tu lista de usuarios ignorados.
 
 #### Exportar:
@@ -15,9 +17,6 @@ Este script para fc te permite exportar e importar tu lista de usuarios ignorado
   - Esperar a que el indicador de progreso se complete.
   - Se actualizará la lista automáticamente
   - *es posible que haya que refrescar la pagina para ver los cambios*
-
-
-[INSTALAR](https://github.com/Pytness/fc-script/raw/master/src/exportIgnoredUserList/index.user.js)
 
 *[Hilo](https://www.forocoches.com/foro/showthread.php?t=6794769)*
 
