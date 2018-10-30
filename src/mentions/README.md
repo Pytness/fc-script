@@ -10,4 +10,4 @@ Se activará automáticamente al escribir un @, en ese momento se mostrará un p
 *[Hilo](https://www.forocoches.com/foro/showthread.php?t=6794769)*
 
 
-*ChilyPicantito*
+*By pytness & siralos*

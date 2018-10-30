@@ -7,3 +7,5 @@ Se activa automaticamente al escribir un ':'
 
 
 *[Hilo](https://www.forocoches.com/foro/showthread.php?t=6633095)*
+
+*By pytness*
