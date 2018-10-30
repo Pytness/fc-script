@@ -6,6 +6,8 @@
 // @author       Siralos & Pytness
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @match        https://www.forocoches.com/foro/newreply.php*
+// @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/mentions/index.user.js
+// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/mentions/index.user.js
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
@@ -46,13 +48,13 @@
 		let nlist = [];
 
 		$(nickSelector).each((i, value) => {
-			if(!(pathname === '/foro/showthread.php') ^ value.parentElement.title.includes('Mensaje'))
+			if (!(pathname === '/foro/showthread.php') ^ value.parentElement.title.includes('Mensaje'))
 				return;
 
 			let nickname = value.innerText.trim();
 
 			// If nickname not in the list
-			if(!nlist.includes(nickname))
+			if (!nlist.includes(nickname))
 				nlist.push(nickname);
 		});
 
@@ -67,7 +69,7 @@
 			// Build rows
 			tr.append(`<td><div class='nick'>${nick}</div></td>`);
 
-			if((col % 6 === 0 && col !== 0) || col === nicklist.length - 1) {
+			if ((col % 6 === 0 && col !== 0) || col === nicklist.length - 1) {
 				table.append(tr);
 				tr = $('<tr>');
 			}
@@ -88,7 +90,7 @@
 		// Add space padding if necessary
 		let padding = text.substr(cursor, 1) !== ' ' ? ' ' : '';
 
-		if(nickname.split(' ').length == 1) {
+		if (nickname.split(' ').length == 1) {
 			newText += nickname;
 		} else {
 			// First remove '@' cause no longer needed
@@ -108,7 +110,7 @@
 	}
 
 	function triggerKey(e) {
-		if(e.key === '@')
+		if (e.key === '@')
 			nicktable.show();
 		else
 			nicktable.hide();
@@ -117,9 +119,9 @@
 	function updateNicktableState(e) {
 		let cursor = editor.prop("selectionStart");
 
-		if(editor.val()[cursor - 1] === '@') {
+		if (editor.val()[cursor - 1] === '@') {
 			nicktable.show();
-			if(usingDefaultEditor()) editor[0].scrollIntoView();
+			if (usingDefaultEditor()) editor[0].scrollIntoView();
 		} else {
 			nicktable.hide();
 		}
@@ -129,7 +131,7 @@
 
 		nicktable.hide();
 
-		if(editor !== null) {
+		if (editor !== null) {
 			editor.off('keypress', triggerKey);
 			editor.off('keypress', updateNicktableState);
 			editor.off('keypress', updateNicktableState);
@@ -143,7 +145,7 @@
 		editor = $(this);
 
 		let parent = editor.parent().parent();
-		if(pathname !== '/foro/showthread.php')
+		if (pathname !== '/foro/showthread.php')
 			parent = parent.parent();
 		parent.prepend(nicktable);
 

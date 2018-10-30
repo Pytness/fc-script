@@ -8,7 +8,7 @@
 // @match        https://www.forocoches.com/foro/newreply.php*
 // @match        https://www.forocoches.com/foro/private.php*
 // @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
-// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
+// @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
 // @run-at       document-end
 // @grant        GM_getResourceText
