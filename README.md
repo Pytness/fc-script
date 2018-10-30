@@ -2,7 +2,6 @@
 
 Scripts para forocoches.com, algunos completamente absurdos, otros que añaden funcionalidades.
 
-
 Lista actual de proyectos:
 
 - [x] [[link]][iconAutocomplete link] "autocompletado de iconos" - *ChilyPicantito*
@@ -41,8 +40,7 @@ Lista actual de proyectos:
 
 - [ ] "Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*
 
-- [ ] "Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*
-
+- [ ] ~~"Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*~~
 
 - [ ] ~~"Haz uno para cagarnos en tu madre" - *ContactoCero*~~
 
