@@ -12,7 +12,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][exportIgnoredUserList link] "exportar/importar lista de ignorados." - *zaguarman*
 
-- [ ] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
+- [x] [[link]][continuousScroll link] "Pasar a la siguiente pagina de un hilo al hacer scroll hacia abajo (al llegar al final de la pagina)" - *Myth631*
 
 - [ ] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
@@ -51,5 +51,6 @@ Lista actual de proyectos:
 [exportIgnoredUserList link]: https://github.com/Pytness/fc-script/tree/master/src/exportIgnoredUserList
 [iconAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/iconAutocomplete
 [mentionsAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/mentions
+[continuousScroll link]: https://github.com/Pytness/fc-script/tree/master/src/continuousScroll
 
 By @Pytness (Chilypicantito)

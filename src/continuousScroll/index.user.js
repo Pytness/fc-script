@@ -2,7 +2,7 @@
 // @name         Continuous Scroll
 // @description  Press ctrl-q on the top to go to the prev page or press ctrl-q on the bottom to go to the next page
 // @author       Pytness
-// @version      0.1
+// @version      1.0
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/showthread.php?t=*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
