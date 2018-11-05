@@ -16,7 +16,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][highlight_dp link] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
-- [ ] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
+- [ ] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
 - [ ] "Integra un botón de subida de imágenes, y otro de audios. Integra los flv" - *Keli*
 
@@ -53,6 +53,7 @@ Lista actual de proyectos:
 [mentionsAutocomplete link]: https://github.com/Pytness/fc-script/tree/master/src/mentions
 [continuousScroll link]: https://github.com/Pytness/fc-script/tree/master/src/continuousScroll
 [highlight_dp link]: https://github.com/Pytness/fc-script/tree/master/src/highlightDangerousPosts
+[viewOpComments link]: https://github.com/Pytness/fc-script/tree/master/src/viewOpComments
 
 #### Authors:
 - Pytness      => ~~@Chilypicantito~~ @mondflug
