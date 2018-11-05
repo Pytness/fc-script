@@ -16,7 +16,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][highlight_dp link] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
-- [ ] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
+- [x] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
 - [ ] "Integra un botón de subida de imágenes, y otro de audios. Integra los flv" - *Keli*
 
