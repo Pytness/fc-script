@@ -1,14 +1,13 @@
-# Highlight Dangerous Posts
+# Filter Threads
 
 [INSTALAR](https://github.com/Pytness/fc-script/raw/master/src/filterThreads/index.user.js)
 
-Este script para fc permite ocultar hilos que contengan las palabras que inserte el usuario.
+Este script para fc añade un filtrado de hilos que no contengan las palabras filtradas.
 Se accede a la ventana de los "filtros" con la tecla *"F"*.
+Cada palabra o frase filtrada se separa mediante un salto de linea.
 
-Tiene también opción para guardar los filtros en el navegador de forma que si se cierra la pestaña
-no hay que volver a escribir los filtros.
-
-*Cuando se quita el checkbox, el almacenamiento local se borra también*
+El script permite guardar los filtros en el navegador en caso de que se quiera que sean permanentes.
+En caso de deshabilitar la esta opción, los filtros se borran del navegador.
 
 *[Hilo](https://www.forocoches.com/foro/showthread.php?t=6633095)*
 
