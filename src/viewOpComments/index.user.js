@@ -17,12 +17,31 @@
 
 	const $ = jQuery;
 
-	const URL_PARAMS = new URLSearchParams(location.search);
-	const THREAD_ID = parseInt(URL_PARAMS.get('t'));
-	const PAGE_NUMBER = parseInt(URL_PARAMS.get('page') === null ? 1 : URL_PARAMS.get('page'));
+	const INTERVAL_DELAY = 1000; // Min delay between page requests
 
-	var op_user_id = null;
-	let current_document = document;
+	const SHOWTHREAD_URL = 'https://www.forocoches.com/foro/showthread.php';
+	const CURRENT_URL = new URL(location.href);
+	const URL_PARAMS = CURRENT_URL.searchParams;
+	const THREAD_ID = parseInt(URL_PARAMS.get('t'));
+
+	if (THREAD_ID === null) return;
+
+	// Redirect to page #1
+	(() => {
+		let pageNumber = URL_PARAMS.get('page');
+
+		if (pageNumber === null || pageNumber !== '1') {
+			URL_PARAMS.set('page', '1');
+			location.replace(CURRENT_URL.href);
+		}
+
+	})();
+
+	let OP_USER_ID = null;
+
+	function threadIsEchenique(currentDom) {
+		return $(currentDom).find('[id^="fcthread"]').length === 0;
+	}
 
 	function getUserIdFromElement(uel) {
 		return parseInt(new URL(uel.href).searchParams.get('u'));
@@ -33,23 +52,46 @@
 		return getUserIdFromElement(op);
 	}
 
-	function getPageDocument() {
-		let ajax = new XMLHttpRequest();
-		ajax.open('GET', `https://www.forocoches.com/foro/showthread.php?t=${THREAD_ID}`, false);
-		ajax.send();
+	function asyncGetPageDocument(page_id) {
 
-		let parser = new DOMParser();
-		return parser.parseFromString(ajax.response, "text/html");
+		return fetch(`${SHOWTHREAD_URL}?t=${THREAD_ID}&page=${page_id}`)
+			.then(response => response.arrayBuffer())
+			.then(arrayBuffer => {
+				let encoder = new TextDecoder("ISO-8859-1");
+				arrayBuffer = new Uint8Array(arrayBuffer);
+				return encoder.decode(arrayBuffer);
+			})
+			.then(text => {
+				let parser = new DOMParser();
+				return parser.parseFromString(text, "text/html");
+			});
 	}
 
-	function removeNotOpPosts() {
-		$('.bigusername').each((i, el) => {
+	function getPageCount(currentDom) {
+		let nav = $('.pagenav .vbmenu_control');
+		let num = 1;
+		if (nav.length !== 0) {
+			num = nav[0].innerText.trim().split(' ')[3];
+			num = parseInt(num);
+		}
+		return num;
+	}
+
+	function removeNotOpPosts(currentDom) {
+		// Find not op posts
+		$(currentDom).find('.bigusername').each((i, el) => {
 			let current_id = getUserIdFromElement(el);
-			if (current_id !== op_user_id) {
+			if (current_id !== OP_USER_ID) {
 				let post = $(el).closest('div[align="center"]');
 				post.remove();
 			}
 		});
+
+		$(currentDom)
+			.find('.alt2 .smallfont [href^="profile.php"]')
+			.each((i, el) => {
+				$(el).closest('div[align="center"]').remove();
+			});
 	}
 
 	window.addEventListener('DOMContentLoaded', function (e) {
@@ -60,14 +102,43 @@
 			`\tUUID    :    ${GM_info.script.uuid}`
 		);
 
-		if (THREAD_ID === null) return;
+		if (!threadIsEchenique(document)) {
+			const PAGE_COUNT = getPageCount();
+			OP_USER_ID = loadOpUserIdFromHTML(document);
 
-		if (PAGE_NUMBER !== 1) {
-			current_document = getPageDocument();
+			let currentPageId = 2;
+			let lastKnownPageId = null;
+			let lastPromise = null;
+
+			removeNotOpPosts(document);
+
+			let intervalId = setInterval(function () {
+
+				if (currentPageId >= PAGE_COUNT) {
+					clearInterval(intervalId);
+				} else if (lastKnownPageId !== currentPageId) {
+					asyncGetPageDocument(currentPageId)
+						.then((value) => {
+							console.log(`Loaded page ${currentPageId}`);
+							let posts = $(value).find('#posts');
+							removeNotOpPosts(posts[0]);
+							posts.children().each((i, el) => {
+								$('#posts').append(el);
+							});
+						})
+						.catch((err) => {
+							console.log(`Error loading page ${currentPageId}`, err)
+						})
+						.finally(() =>
+							currentPageId++
+						);
+
+					lastKnownPageId = currentPageId;
+				}
+			}, INTERVAL_DELAY);
+
+			// removeNotOpPosts();
 		}
 
-		op_user_id = loadOpUserIdFromHTML(current_document);
-
-		removeNotOpPosts();
 	});
 })();
