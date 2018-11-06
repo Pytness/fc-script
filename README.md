@@ -18,6 +18,8 @@ Lista actual de proyectos:
 
 - [x] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
+- [ ] "Script que te avise de que NO estás poleando en general" - *Cachopon*
+
 - [ ] "Integra un botón de subida de imágenes, y otro de audios. Integra los flv" - *Keli*
 
 - [ ] "repo de gifs [...]" - *iLMAO*
