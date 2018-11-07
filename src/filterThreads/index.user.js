@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Filter Threads By Words
-// @description  Este script filtra los hilos que contengan la spalabras clave que inserte el usuario.
+// @description  Este script filtra los hilos que contengan las palabras clave que inserte el usuario.
 // @author       comandantexd
 // @version      1.0
 // @namespace    http://tampermonkey.net/
