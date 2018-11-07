@@ -18,6 +18,12 @@ Lista actual de proyectos:
 
 - [x] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
 
+- [x] [[link]][filterThreads link] "filtro de hilos por palabras clave" - *Nordfront*
+
+- [ ] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
+
+- [ ] "ventana flotante para citar o contestar a un mensaje sin necesidad de navegar hasta abajo" - *V de Vergansa*
+
 - [ ] "Script que te avise de que NO estás poleando en general" - *Cachopon*
 
 - [ ] "Integra un botón de subida de imágenes, y otro de audios. Integra los flv" - *Keli*
@@ -28,10 +34,6 @@ Lista actual de proyectos:
 
 - [ ] "un boton en imdb que te busque el título en filmafinitty" - *boscorelli*
 
-- [ ] "filtro de hilos por palabras clave" - *Nordfront*
-
-- [ ] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
-
 - [ ] "Auto up de hilos cada X horas" - *eNeko*
 
 - [ ] "Etiquetar usuarios" - *CurlPHP*
@@ -40,7 +42,7 @@ Lista actual de proyectos:
 
 - [ ] "borrar todos los tus mensajes escritos" - *LeShamisen*
 
-- [ ] "Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*
+- [ ] ~"Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*~
 
 - [ ] ~~"Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*~~
 
@@ -56,6 +58,7 @@ Lista actual de proyectos:
 [continuousScroll link]: https://github.com/Pytness/fc-script/tree/master/src/continuousScroll
 [highlight_dp link]: https://github.com/Pytness/fc-script/tree/master/src/highlightDangerousPosts
 [viewOpComments link]: https://github.com/Pytness/fc-script/tree/master/src/viewOpComments
+[filterThreads link]: https://github.com/Pytness/fc-script/tree/master/src/filterThreads
 
 #### Authors:
 - Pytness      => ~~@Chilypicantito~~ @mondflug
