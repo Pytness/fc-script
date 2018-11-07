@@ -20,8 +20,10 @@
 
 	$.expr[':'].icontains = function (a, i, m) {
 		return $(a).text().toUpperCase()
-		.indexOf(m[3].toUpperCase()) >= 0;
+			.indexOf(m[3].toUpperCase()) >= 0;
 	};
+
+	const SPLIT_CHARACTER = "\n";
 
 	var save = false;
 	var checked_opt = "";
@@ -36,12 +38,12 @@
 	let search = "";
 	let searched = false;
 
-	window.onkeypress = function(event){
-		if(event.code === "KeyF" && !isOpen){
+	window.onkeypress = function (event) {
+		if (event.code === "KeyF" && !isOpen) {
 			isOpen = true;
 			event.preventDefault();
-			
-			if (!searched || search == ""){
+
+			if (!searched || search == "") {
 				search = (function () {
 					let sto = localStorage.getItem('TM_FILTERTHREADS_FLAGS');
 					let val = "";
@@ -55,18 +57,20 @@
 				})();
 			}
 
-			(async function getFormValues () {
-				const {value: formValues} = await swal({
+			(async function getFormValues() {
+				const formValues = await swal({
 					title: 'MODIFICAR LAS FLAGS',
-					html:
-					`<textarea id="swal-input1" class="swal2-textarea" placeholder="Separar las palabras con comas" style="font-family: sans-serif">${search}</textarea>` +
-					`<input type="checkbox" id="swal-input2" class="swal2-checkbox" style="font-family: sans-serif" ${checked_opt}>` +
-					'<span class="swal2-label" style="font-family: sans-serif"> Guardar las flags en local?</span>',
+					html: `<textarea id="swal-input1" class="swal2-textarea" placeholder="Separar las palabras con comas">${search}</textarea>` +
+						`<input type="checkbox" id="swal-input2" class="swal2-checkbox" ${checked_opt}>` +
+						'<span class="swal2-label">Guardar las flags en local?</span>',
 					focusConfirm: false,
+					onOpen: () => {
+						// put cursor at end
+						$('#swal-input1')[0].setSelectionRange(search.length, search.length);
+					},
 					preConfirm: () => {
-						let textarea = document.getElementById('swal-input1').value;
-
-						save = document.getElementById('swal-input2').checked;
+						let textarea = $('#swal-input1').val();
+						save = $('#swal-input2')[0].checked;
 						return textarea;
 					},
 					onClose: () => {
@@ -84,24 +88,24 @@
 					}
 				}
 
-				if (searched){
+				if (searched) {
 					rowsSelected.css({
 						display: 'table-row'
 					});
 				}
 
 				if (search != "") {
-					flags = (function (){
-						let flags = search.split(",").map(f => f.trim());
+					flags = (function () {
+						let flags = search.split(SPLIT_CHARACTER).map(f => f.trim());
 						flags = flags.filter(flag => flag != "");
 						return flags;
 					})();
 
 					if (PATH == "/foro/forumdisplay.php") {
-						regularSel = flags.map(f => `a:icontains('${f}')`).join(', ');
+						regularSel = flags.map(f => `a:icontains('${f}')`).join(SPLIT_CHARACTER);
 						rowsSelected = $(regularSel).parent().parent().parent();
 					} else {
-						regularSel = flags.map(f => `a[title*='${f}' i]`).join(', ');
+						regularSel = flags.map(f => `a[title*='${f}' i]`).join(SPLIT_CHARACTER);
 						rowsSelected = $(regularSel).parent().parent();
 					}
 
@@ -109,12 +113,12 @@
 						display: 'none'
 					});
 
-					search = flags.join(", ");
+					search = flags.join(SPLIT_CHARACTER);
 					if (save) {
 						localStorage.setItem('TM_FILTERTHREADS_FLAGS', search);
 						checked_opt = "checked";
 					}
-					search += ", ";
+					search += SPLIT_CHARACTER;
 					searched = true;
 				}
 
@@ -125,4 +129,22 @@
 			})();
 		}
 	}
+
+	window.addEventListener('DOMContentLoaded', function (e) {
+		$('head').append(`
+			<style>
+				.swal2-textarea {
+					font-size: 100% !important;
+					resize: vertical !important;
+				}
+				.swal2-checkbox {
+					margin-right: 5px !important;
+				}
+				.swal2-textarea, .swal2-checkbox, .swal2-label {
+					font-family: sans-serif !important;
+				}
+			</style>
+		`);
+	});
+
 })();

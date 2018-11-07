@@ -87,6 +87,7 @@
 			}
 		});
 
+		// remove ignored user posts
 		$(currentDom)
 			.find('.alt2 .smallfont [href^="profile.php"]')
 			.each((i, el) => {
@@ -136,9 +137,6 @@
 					lastKnownPageId = currentPageId;
 				}
 			}, INTERVAL_DELAY);
-
-			// removeNotOpPosts();
 		}
-
 	});
 })();
