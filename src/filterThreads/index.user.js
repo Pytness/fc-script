@@ -10,141 +10,117 @@
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@7.28.11/dist/sweetalert2.all.min.js
 // @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/filterThreads/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/filterThreads/index.user.js
+// @run-at       document-end
 // ==/UserScript==
 
 (function () {
 	'use strict';
 
 	const $ = jQuery;
-	const PATH = location.pathname;
-
-	$.expr[':'].icontains = function (a, i, m) {
-		return $(a).text().toUpperCase()
-			.indexOf(m[3].toUpperCase()) >= 0;
-	};
+	const IN_ROOT_PATH = location.pathname === '/';
 
 	const SPLIT_CHARACTER = "\n";
 
-	var save = false;
-	var checked_opt = "";
+	let dialogIsOpen = false;
+	let filterText = localStorage.getItem('tm_ft_flags') || '';
+	let filtersEnabled = Boolean(localStorage.getItem('tm_ft_is_enabled') || true);
 
-	let rowsSelected;
-	let regularSel;
+	let threadLinks = $(IN_ROOT_PATH ?
+		'a.texto[href*="/foro/showthread.php?t="][title]' :
+		'a[href*="showthread.php?t="][id]');
 
-	let isOpen = false;
 
-	let flags = [];
+	String.prototype.removeTildes = function () {
+		return this.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+	};
 
-	let search = "";
-	let searched = false;
+	function filterThreads() {
+		threadLinks.closest('tr').show();
 
-	window.onkeypress = function (event) {
-		if (event.code === "KeyF" && !isOpen) {
-			isOpen = true;
-			event.preventDefault();
+		if (filtersEnabled) {
+			let flags = filterText.split(SPLIT_CHARACTER)
+				.map(f => f.trim()
+					.toLowerCase()
+					.removeTildes())
+				.filter(f => f !== "");
 
-			if (!searched || search == "") {
-				search = (function () {
-					let sto = localStorage.getItem('TM_FILTERTHREADS_FLAGS');
-					let val = "";
-					if (sto) {
-						val = sto;
-						checked_opt = "checked";
-					} else {
-						val = "";
-					}
-					return val;
-				})();
-			}
+			threadLinks.each((i, el) => {
+				el = $(el);
+				let title = (IN_ROOT_PATH ? el.attr('title') : el.text())
+					.toLowerCase()
+					.removeTildes();
 
-			(async function getFormValues() {
-				const formValues = await swal({
-					title: 'MODIFICAR LAS FLAGS',
-					html: `<textarea id="swal-input1" class="swal2-textarea" placeholder="Separar las palabras con comas">${search}</textarea>` +
-						`<input type="checkbox" id="swal-input2" class="swal2-checkbox" ${checked_opt}>` +
-						'<span class="swal2-label">Guardar las flags en local?</span>',
-					focusConfirm: false,
-					onOpen: () => {
-						// put cursor at end
-						$('#swal-input1')[0].setSelectionRange(search.length, search.length);
-					},
-					preConfirm: () => {
-						let textarea = $('#swal-input1').val();
-						save = $('#swal-input2')[0].checked;
-						return textarea;
-					},
-					onClose: () => {
-						isOpen = false;
-					}
-				})
-
-				if (formValues === true || formValues && formValues.trim() == "") {
-					search = "";
-				} else if (formValues || search == "") {
-					if (!formValues) {
-						search = "";
-					} else {
-						search = formValues;
-					}
+				// if includes a filtered phrase
+				if (!flags.every(f => !title.includes(f))) {
+					el.closest('tr').hide();
 				}
-
-				if (searched) {
-					rowsSelected.css({
-						display: 'table-row'
-					});
-				}
-
-				if (search != "") {
-					flags = (function () {
-						let flags = search.split(SPLIT_CHARACTER).map(f => f.trim());
-						flags = flags.filter(flag => flag != "");
-						return flags;
-					})();
-
-					if (PATH == "/foro/forumdisplay.php") {
-						regularSel = flags.map(f => `a:icontains('${f}')`).join(SPLIT_CHARACTER);
-						rowsSelected = $(regularSel).parent().parent().parent();
-					} else {
-						regularSel = flags.map(f => `a[title*='${f}' i]`).join(SPLIT_CHARACTER);
-						rowsSelected = $(regularSel).parent().parent();
-					}
-
-					rowsSelected.css({
-						display: 'none'
-					});
-
-					search = flags.join(SPLIT_CHARACTER);
-					if (save) {
-						localStorage.setItem('TM_FILTERTHREADS_FLAGS', search);
-						checked_opt = "checked";
-					}
-					search += SPLIT_CHARACTER;
-					searched = true;
-				}
-
-				if (!save) {
-					localStorage.removeItem('TM_FILTERTHREADS_FLAGS');
-					checked_opt = "";
-				}
-			})();
+			});
 		}
 	}
 
-	window.addEventListener('DOMContentLoaded', function (e) {
-		$('head').append(`
-			<style>
-				.swal2-textarea {
-					font-size: 100% !important;
-					resize: vertical !important;
-				}
-				.swal2-checkbox {
-					margin-right: 5px !important;
-				}
-				.swal2-textarea, .swal2-checkbox, .swal2-label {
-					font-family: sans-serif !important;
-				}
-			</style>
-		`);
-	});
+	function showPopPup(filterText) {
+		let popupElement;
+		return swal({
+			title: 'Modificar filtros',
+			html: `<textarea id="swal-input1" class="swal2-textarea" placeholder="Separar las palabras con comas"></textarea>` +
+				`<input type="checkbox" class="swal2-checkbox" ${filtersEnabled ? 'checked' : ''}>` +
+				'<span class="swal2-label">Activar filtros</span>',
+			showCancelButton: true,
+			reverseButtons: true,
+			cancelButtonColor: '#d33',
+			focusConfirm: false,
+			onOpen: (tempPopupElement) => {
+				popupElement = tempPopupElement;
+				dialogIsOpen = true;
+				$(popupElement).find('textarea').val(filterText);
+				$(popupElement).find('textarea')[0]
+					.setSelectionRange(filterText.length, filterText.length);
+			},
+			preConfirm: () => ({
+				text: $(popupElement).find('textarea').val(),
+				enabled: $(popupElement).find('[type="checkbox"]')[0].checked
+			}),
+			onClose: () => {
+				dialogIsOpen = false;
+			}
+		});
+	}
 
+	window.onkeypress = function (event) {
+		if (event.code === "KeyF" && !dialogIsOpen) {
+			event.preventDefault();
+
+			let selectedRows = $([]);
+
+			showPopPup(filterText)
+				.then((response) => {
+					console.log(response);
+					filterText = response.value.text.trim();
+					filtersEnabled = response.value.enabled;
+
+					localStorage.setItem('tm_ft_flags', filterText);
+					localStorage.setItem('tm_ft_is_enabled', filtersEnabled);
+
+					filterThreads();
+				})
+				.catch((error) => console.error(error));
+		}
+	}
+
+	$('head').append(`
+		<style>
+			.swal2-textarea {
+				font-size: 100% !important;
+				resize: vertical !important;
+			}
+			.swal2-checkbox {
+				margin-right: 5px !important;
+			}
+			.swal2-textarea, .swal2-checkbox, .swal2-label {
+				font-family: sans-serif !important;
+			}
+		</style>
+	`);
+
+	filterThreads();
 })();
