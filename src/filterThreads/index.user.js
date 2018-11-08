@@ -2,7 +2,7 @@
 // @name         Filter Threads By Words
 // @description  Este script filtra los hilos que contengan las palabras clave que inserte el usuario.
 // @author       comandantexd
-// @version      1.0
+// @version      1.02
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/
 // @match        https://www.forocoches.com/foro/forumdisplay.php*
@@ -62,7 +62,8 @@
 		let popupElement;
 		return swal({
 			title: 'Modificar filtros',
-			html: `<textarea id="swal-input1" class="swal2-textarea" placeholder="Separar las palabras con comas"></textarea>` +
+			html: `<textarea id="swal-input1" class="swal2-textarea" ` +
+				`placeholder="Separar las palabras con comas"  spellcheck="false"></textarea>` +
 				`<input type="checkbox" class="swal2-checkbox" ${filtersEnabled ? 'checked' : ''}>` +
 				'<span class="swal2-label">Activar filtros</span>',
 			showCancelButton: true,
@@ -102,6 +103,7 @@
 					localStorage.setItem('tm_ft_is_enabled', filtersEnabled);
 
 					filterThreads();
+					filterText += '\n';
 				})
 				.catch((error) => console.error(error));
 		}
