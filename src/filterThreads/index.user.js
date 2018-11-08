@@ -72,10 +72,13 @@
 			focusConfirm: false,
 			onOpen: (tempPopupElement) => {
 				popupElement = tempPopupElement;
+				let textarea = $(popupElement).find('textarea')[0];
 				dialogIsOpen = true;
-				$(popupElement).find('textarea').val(filterText);
-				$(popupElement).find('textarea')[0]
-					.setSelectionRange(filterText.length, filterText.length);
+				$(textarea).val(filterText);
+				textarea.setSelectionRange(filterText.length, filterText.length);
+
+				//scroll to bottom
+				textarea.scrollTop = textarea.scrollHeight;
 			},
 			preConfirm: () => ({
 				text: $(popupElement).find('textarea').val(),
