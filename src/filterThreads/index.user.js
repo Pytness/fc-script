@@ -90,7 +90,7 @@
 		});
 	}
 
-	window.onkeypress = function (event) {
+	window.addEventListener('keypress', function (event) {
 		if (event.code === "KeyF" && !dialogIsOpen) {
 			event.preventDefault();
 
@@ -110,7 +110,7 @@
 				})
 				.catch((error) => console.error(error));
 		}
-	}
+	});
 
 	$('head').append(`
 		<style>
