@@ -31,7 +31,9 @@
 		let pageNumber = URL_PARAMS.get('page');
 
 		if (pageNumber === null || pageNumber !== '1') {
+			URL_PARAMS.search = '';
 			URL_PARAMS.set('page', '1');
+			URL_PARAMS.set('t', THREAD_ID);
 			location.assign(CURRENT_URL.href);
 		}
 	})();
