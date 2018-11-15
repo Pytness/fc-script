@@ -2,7 +2,7 @@
 // @name         viewOpComments
 // @description  Este script elimina los posts que no sean del OP
 // @author       pytness
-// @version      1.2.1
+// @version      1.2.2
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
@@ -32,9 +32,8 @@
 
 		if (pageNumber === null || pageNumber !== '1') {
 			URL_PARAMS.set('page', '1');
-			location.replace(CURRENT_URL.href);
+			location.assign(CURRENT_URL.href);
 		}
-
 	})();
 
 	let OP_USER_ID = null;
