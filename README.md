@@ -16,7 +16,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][highlight_dp link] "Destacar los +18 +NSFW +serio 'por si la moscas'" - *HANGUYOS*
 
-- [x] [[link]][viewOpComments link] "haz uno que te haga desaparecer todos los comentarios del hilo excepto los del OP" - *Missigno*, *Jilario*
+- [x] [[link]][viewOpComments link] "Ver solo los comentarios del OP" - *Missigno*, *Jilario*
 
 - [x] [[link]][filterThreads link] "filtro de hilos por palabras clave" - *Nordfront*
 
