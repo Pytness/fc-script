@@ -13,106 +13,128 @@
 // @run-at       document-end
 // ==/UserScript==
 
-(function () {
-	'use strict';
+(function() {
+    'use strict';
 
-	const $ = jQuery;
-	const IN_ROOT_PATH = location.pathname === '/';
+    const $ = jQuery;
+    const IN_ROOT_PATH = location.pathname === '/';
 
-	const SPLIT_CHARACTER = "\n";
+    const SPLIT_CHAR = "\n";
 
-	let dialogIsOpen = false;
-	let filterText = localStorage.getItem('tm_ft_flags') || '';
-	let filtersEnabled = Boolean(localStorage.getItem('tm_ft_is_enabled') || true);
+    let dialogIsOpen = false;
 
-	let threadLinks = $(IN_ROOT_PATH ?
-		'a.texto[href*="/foro/showthread.php?t="][title]' :
-		'a[href*="showthread.php?t="][id]');
+    // Get flags text. if not exists, use ''
+    let filterText = localStorage.getItem('tm_ft_flags') || '';
+    // Get filters enabled option. ifnot exists, use 'true'
+    let filtersEnabled = Boolean(localStorage.getItem('tm_ft_is_enabled') || true);
+
+    // if in root path ? use this : else use this other
+    let threadLinks = $(IN_ROOT_PATH ?
+        'a.texto[href*="/foro/showthread.php?t="][title]' :
+        'a[href*="showthread.php?t="][id]'
+    );
 
 
-	String.prototype.removeTildes = function () {
-		return this.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-	};
+    // Define a string method
+    String.prototype.removeTildes = function() {
+        return this.normalize('NFD') // char to unicode: 'á' -> 'a\u0301'
+            .replace(/[\u0300-\u036f]/g, ""); // remove \u0300 - \u036f
+    };
 
-	function filterThreads() {
-		threadLinks.closest('tr').show();
+    function filterThreads() {
+        // show every thread rows
+        threadLinks.closest('tr').show();
 
-		if (filtersEnabled) {
-			let flags = filterText.split(SPLIT_CHARACTER)
-				.map(f => f.trim()
-					.toLowerCase()
-					.removeTildes())
-				.filter(f => f !== "");
+        if (filtersEnabled) {
+            let flags = filterText.split(SPLIT_CHAR)
+                .map(f => f.trim()
+                    .toLowerCase()
+                    .removeTildes()
+                )
+                // remove empty flags
+                .filter(f => f !== "");
 
-			threadLinks.each((i, el) => {
-				el = $(el);
-				let title = (IN_ROOT_PATH ? el.attr('title') : el.text())
-					.toLowerCase()
-					.removeTildes();
+            // For each thread link
+            threadLinks.each((i, el) => {
+                el = $(el);
+                let title = (IN_ROOT_PATH ? el.attr('title') : el.text())
+                    .toLowerCase()
+                    .removeTildes();
 
-				// if includes a filtered phrase
-				if (!flags.every(f => !title.includes(f))) {
-					el.closest('tr').hide();
-				}
-			});
-		}
-	}
+                let includesFilteredPhrase = !flags.every(f => !title.includes(f))
 
-	function showPopPup(filterText) {
-		let popupElement;
-		return swal({
-			title: 'Modificar filtros',
-			html: `<textarea id="swal-input1" class="swal2-textarea" ` +
-				`placeholder="Separar las palabras con comas"  spellcheck="false"></textarea>` +
-				`<input type="checkbox" class="swal2-checkbox" ${filtersEnabled ? 'checked' : ''}>` +
-				'<span class="swal2-label">Activar filtros</span>',
-			showCancelButton: true,
-			reverseButtons: true,
-			cancelButtonColor: '#d33',
-			focusConfirm: false,
-			onOpen: (tempPopupElement) => {
-				popupElement = tempPopupElement;
-				let textarea = $(popupElement).find('textarea')[0];
-				dialogIsOpen = true;
-				$(textarea).val(filterText);
-				textarea.setSelectionRange(filterText.length, filterText.length);
+                if (includesFilteredPhrase)
+                    el.closest('tr').hide();
 
-				//scroll to bottom
-				textarea.scrollTop = textarea.scrollHeight;
-			},
-			preConfirm: () => ({
-				text: $(popupElement).find('textarea').val(),
-				enabled: $(popupElement).find('[type="checkbox"]')[0].checked
-			}),
-			onClose: () => {
-				dialogIsOpen = false;
-			}
-		});
-	}
+            });
+        }
+    }
 
-	window.addEventListener('keypress', function (event) {
-		if (event.code === "KeyF" && !dialogIsOpen) {
-			event.preventDefault();
+    function showPopPup() {
+        let popupElement;
+        return swal({
+            title: 'Modificar filtros',
+            html: `<textarea id="swal-input1" class="swal2-textarea" ` +
+                `placeholder="Separar las palabras con comas" spellcheck="false"></textarea>` +
+                `<input type="checkbox" class="swal2-checkbox" ${filtersEnabled ? 'checked' : ''}>` +
+                '<span class="swal2-label">Activar filtros</span>',
+            showCancelButton: true,
+            reverseButtons: true,
+            cancelButtonColor: '#E03A3A',
+            focusConfirm: false,
+            onOpen: (tempPopupElement) => {
+                dialogIsOpen = true;
+                popupElement = tempPopupElement;
 
-			let selectedRows = $([]);
+                let textarea = $(popupElement).find('textarea')[0];
+                $(textarea).val(filterText);
 
-			showPopPup(filterText)
-				.then((response) => {
-					console.log(response);
-					filterText = response.value.text.trim();
-					filtersEnabled = response.value.enabled;
+                // Put cursor at the end
+                textarea.setSelectionRange(filterText.length, filterText.length);
 
-					localStorage.setItem('tm_ft_flags', filterText);
-					localStorage.setItem('tm_ft_is_enabled', filtersEnabled);
+                //scroll to bottom
+                textarea.scrollTop = textarea.scrollHeight;
+            },
+            preConfirm: () => ({
+                text: $(popupElement).find('textarea').val(),
+                enabled: $(popupElement).find('[type="checkbox"]')[0].checked
+            }),
+            onClose: () => {
+                dialogIsOpen = false;
+            }
+        });
+    }
 
-					filterThreads();
-					filterText += '\n';
-				})
-				.catch((error) => console.error(error));
-		}
-	});
+    window.addEventListener('keypress', function(event) {
+        // if key is 'F' and dialog is not open
+        if (event.code === "KeyF" && !dialogIsOpen) {
+            // prevent writing on inputs
+            event.preventDefault();
 
-	$('head').append(`
+            let selectedRows = $([]);
+
+            showPopPup()
+                .then(({
+                    value: response
+                }) => {
+                    filterText = response.text.trim();
+                    filtersEnabled = response.enabled;
+
+                    // Save flags on localStorage
+                    localStorage.setItem('tm_ft_flags', filterText);
+                    localStorage.setItem('tm_ft_is_enabled', filtersEnabled);
+
+                    filterThreads();
+
+                    // Add a new line
+                    filterText += '\n';
+                })
+                .catch((error) => console.error(error));
+        }
+    });
+
+    // Add custom css
+    $('head').append(`
 		<style>
 			.swal2-textarea {
 				font-size: 100% !important;
@@ -127,5 +149,6 @@
 		</style>
 	`);
 
-	filterThreads();
+    // Filter threads ASAP
+    filterThreads();
 })();
