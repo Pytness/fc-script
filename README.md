@@ -20,7 +20,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][filterThreads link] "filtro de hilos por palabras clave" - *Nordfront*
 
-- [ ] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
+- [x] [[link]][imagePopUp link] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
 
 - [ ] "ventana flotante para citar o contestar a un mensaje sin necesidad de navegar hasta abajo" - *V de Vergansa*
 
@@ -59,6 +59,7 @@ Lista actual de proyectos:
 [highlight_dp link]: https://github.com/Pytness/fc-script/tree/master/src/highlightDangerousPosts
 [viewOpComments link]: https://github.com/Pytness/fc-script/tree/master/src/viewOpComments
 [filterThreads link]: https://github.com/Pytness/fc-script/tree/master/src/filterThreads
+[imagePopUp link]: https://github.com/Pytness/fc-script/tree/master/src/imagePopUp
 
 #### Authors:
 - Pytness      => ~~@Chilypicantito~~ @mondflug
