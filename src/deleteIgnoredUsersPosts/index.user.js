@@ -2,7 +2,7 @@
 // @name         Delete Ignored Users Posts
 // @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
 // @author       Pytness
-// @version      1.02
+// @version      1.03
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/
 // @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
@@ -18,12 +18,22 @@
 (function () {
 	'use strict';
 
-	const query = s => document.querySelector(s);
-	const queryAll = s => document.querySelectorAll(s);
+	const $ = jQuery;
 
 	const USER_ID_LIST_LS_KEY = 'tm_ignored_user_id_list';
 	const USERNAME_LIST_LS_KEY = 'tm_ignored_username_list';
 	const DO_UPDATE_LS_KEY = 'tm_do_ignored_list_update';
+
+	const PATH = location.pathname;
+	const URL_SEARCH = location.search;
+
+	const FC_PATHS = {
+		absolute_path: '/',
+		showthread: '/foro/showthread.php',
+		ignorelist: '/foro/profile.php?do=ignorelist',
+		forumdisplay: '/foro/forumdisplay.php'
+	}
+
 	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
 
 	function getajax(url, param = '') {
@@ -35,16 +45,15 @@
 	}
 
 	function parseIgnoredListHtml(html) {
-		let parser = new DOMParser();
-		let html_doc = parser.parseFromString(html, "text/html");
+		let html_doc = (new DOMParser()).parseFromString(html, "text/html");
 
-		let form = html_doc.querySelector('.userlist.floatcontainer');
-		let li_list = Array.from(form.querySelectorAll('li > a'));
+		let form = $(html_doc).find('.userlist.floatcontainer');
+		let li_list = form.find('li > a');
 
 		let temp_user_id_list = [];
 		let temp_username_list = [];
 
-		li_list.forEach(el => {
+		li_list.each((i, el) => {
 			let uid = parseInt(el.href.split('=').slice(-1)[0]);
 			let uname = el.innerText.trim();
 			uname = uname.trim().toLowerCase();
@@ -79,61 +88,59 @@
 	}
 
 	const safehtml = html => {
-		html = html.replace('<', '&lt;');
-		html = html.replace('>', '&gt;');
-
-		return html;
+		return html
+			.replace('<', '&lt;')
+			.replace('>', '&gt;');
 	};
 
 	const [USER_ID_LIST, USERNAME_LIST] = getIgnoredUsersIdList();
 
-	if ((location.pathname + location.search) === '/foro/profile.php?do=ignorelist') {
+	if ((PATH + URL_SEARCH) === FC_PATHS.ignorelist) {
 		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
-	} else if (location.pathname === '/') {
-		let authors = queryAll('.cajasnews table:not(.she) td:nth-child(4) a');
-		if (authors === null) return;
-		authors = Array.from(authors);
 
-		authors.forEach(author => {
+	} else if (PATH === FC_PATHS.absolute_path) {
+		let authors = $('.cajasnews a[href*="/foro/member"]');
+		if (authors.length === 0) return;
+
+		authors.each((i, author) => {
 			let uid = parseInt(author.href.split('=').slice(-1)[0]);
 			if (USER_ID_LIST.includes(uid)) {
-				author.parentElement.parentElement.remove();
+				$(author).parent().parent().remove();
 			}
 		});
-	} else if (location.pathname === '/foro/forumdisplay.php') {
-		let currentId = '#threadbits_forum_' + location.search.split('?f=')[1];
-		let authors = queryAll(`${currentId} span[style="cursor:pointer"]`);
 
-		if (authors === null) return;
-		authors = Array.from(authors);
+	} else if (PATH === FC_PATHS.forumdisplay) {
+		let authors = $(`[id*=threadbits_forum] span[onclick]`);
 
-		authors.forEach(author => {
-			let uid = author.getAttribute('onclick').split('=').slice(-1)[0];
+		if (authors.length === 0) return;
+
+		authors.each((i, author) => {
+			let uid = $(author).attr('onclick').split('=', 2)[1];
 			uid = parseInt(uid.split("'")[0]);
 
 			if (USER_ID_LIST.includes(uid)) {
-				author.parentElement.parentElement.parentElement.remove();
+				$(author).parent().parent().parent().remove();
 			}
 		});
-	} else if (location.pathname === "/foro/showthread.php") {
-		let authors = queryAll('td.alt2 > div > b');
-		if (authors === null) return;
 
-		authors = Array.from(authors);
+	} else if (PATH === FC_PATHS.showthread) {
+		let authors = $('td.alt2 > div > b');
+		if (authors.length === 0) return;
 
-		authors.forEach(author => {
+		authors.each((i, author) => {
 			let uname = author.innerText; // possible xss injection
 			let lowerUname = uname.trim().toLowerCase();
 
-			uname = safehtml(uname);
+			uname = safehtml(uname); // get rid of possible xss
 
 			if (USERNAME_LIST.includes(lowerUname)) {
 				let td = author.parentElement.parentElement;
 				let text = td.lastElementChild;
 
-				text.innerHTML = '<br>Este mensaje está oculto porque ';
-				text.innerHTML += `<b>${uname}</b> está en tu `;
-				text.innerHTML += '<a href="profile.php?do=ignorelist" target="_blank">lista de ignorados</a>';
+				text.innerHTML = '<br>Este mensaje está oculto porque ' +
+					`<b>${uname}</b> está en tu ` +
+					`<a href="${FC_PATHS.ignorelist}" target="_blank">` +
+					'lista de ignorados</a>';
 			}
 		});
 	}

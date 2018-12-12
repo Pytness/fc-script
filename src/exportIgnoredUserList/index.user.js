@@ -7,7 +7,7 @@
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @resource     stylesheet https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/main.css
-// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.user.js
+// @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/exportIgnoredUserList/index.user.js
 // @run-at       document-end
 // @grant        GM_getResourceText

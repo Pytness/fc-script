@@ -21,3 +21,5 @@ Este script para fc te permite exportar e importar tu lista de usuarios ignorado
 *[Hilo](https://www.forocoches.com/foro/showthread.php?t=6794769)*
 
 *Idea de @zaguarman*
+
+*By pytness*
