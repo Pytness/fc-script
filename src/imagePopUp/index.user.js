@@ -1,66 +1,83 @@
 // ==UserScript==
-// @name         imagePopUp
-// @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Este script muestra las imagenes adjuntas en una ventana modal
+// @name         ImagePopUp
+// @description  Este script muestra las imagenes adjuntas en una ventana modal (pop up)
 // @author       nurbian
+// @version      1.0
+// @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@7.28.11/dist/sweetalert2.all.min.js
+// @run-at       document-start
+// @grant        unsafeWindow
 // ==/UserScript==
 
-(function() {
-	'use strict';
+(function($, window) {
+    'use strict';
 
-	const $ = jQuery;
+    window.addEventListener('DOMContentLoaded', function(e) {
 
-	$('img.thumbnail').click(function (event) {
-		event.preventDefault();
+        let images = [];
+        let imageIndex = 0;
+        let src = '';
+        let dialogIsOpen = false;
 
-		let a = $(this).closest('div').children().toArray(); //stores all the "a" elements of the thumbnails in form of an array
+        function next() {
+            imageIndex = ++imageIndex % images.length;
+            src = images[imageIndex].attributes.href.value;
+            $('#modal-thumb').attr('src', src);
+            $('#modal-thumb').parent().attr('href', src);
+            $('#img-index').text(imageIndex + 1);
+        }
 
-		let actualImage = parseInt($(this).parent().index()); //stores the "a" element that was clicked in form of integer
+        function prev() {
+            imageIndex = (imageIndex + images.length - 1) % images.length;
+            src = images[imageIndex].attributes.href.value;
+            $('#modal-thumb').attr('src', src);
+            $('#modal-thumb').parent().attr('href', src);
+            $('#img-index').text(imageIndex + 1);
+        }
 
-		let src = a[actualImage].attributes.href.value;
-		swal({
-			title: 'Archivos adjuntos',
-			html: `<a href="${src}" target="_blank"><img id="modal-thumb" class="swal2-image" src="${src}"></a> <br>
-			<div id="modal-opt"><strong id="prev-arrow"><</strong><span id="img-index">0</span><strong id="next-arrow">></strong></div>`,
-			onOpen: () => {
-				if (a.length == 1) {
-					$('#modal-opt').css({display: 'none'});
-				} else {
-					$('#img-index').text(actualImage+1);
+        $('img.thumbnail').click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
 
-					$('#next-arrow').click(next);
-					$('#prev-arrow').click(prev);
+            //stores all the images
+            images = $(this).closest('div').children().toArray();
 
-					window.onkeydown = ev => {
-						if (ev.code == "ArrowRight") {
-							next();
-						} else if (ev.code == "ArrowLeft") {
-							prev();
-						}
-					}
-				}
-			}
-		});
-		function next() {
-			actualImage < a.length - 1 ? ++actualImage : actualImage = 0;
-			src = a[actualImage].attributes.href.value;
-			$('#modal-thumb').attr('src', src);
-			$('#modal-thumb').parent().attr('href', src);
-			$('#img-index').text(actualImage+1);
-		}
-		function prev() {
-			actualImage > 0 ? --actualImage : actualImage = a.length - 1;
-			src = a[actualImage].attributes.href.value;
-			$('#modal-thumb').attr('src', src);
-			$('#modal-thumb').parent().attr('href', src);
-			$('#img-index').text(actualImage+1);
-		}
+            imageIndex = $(this).parent().index();
+            src = images[imageIndex].attributes.href.value;
 
-		$('head').append(`
+            swal({
+                title: 'Archivos adjuntos',
+                html: `<a href="${src}" target="_blank">` +
+                    `<img id="modal-thumb" class="swal2-image" src="${src}"></a>` +
+                    '<div id="modal-opt"><strong id="prev-arrow"><</strong>' +
+                    '<span id="img-index">0</span>' +
+                    '<strong id="next-arrow">></strong></div>',
+
+                onOpen: () => {
+
+                    dialogIsOpen = true;
+
+                    if (images.length == 1) {
+                        $('#modal-opt').css({
+                            display: 'none'
+                        });
+                    } else {
+                        $('#img-index').text(imageIndex + 1);
+                        $('#next-arrow').click(next);
+                        $('#prev-arrow').click(prev);
+                    }
+                },
+
+                onClose: () => {
+                    dialogIsOpen = false;
+                }
+
+            });
+        });
+
+        $('head').append(`
 			<style>
 			#next-arrow, #prev-arrow {
 				cursor: pointer;
@@ -82,8 +99,14 @@
 				100% {opacity: 100;}
 			}*/
 			</style>
-		`);
+			`);
 
-		event.stopPropagation();
-	});
-})();
+        window.addEventListener('keydown', function(ev) {
+            if (dialogIsOpen) {
+                if (ev.code == "ArrowRight") next();
+                if (ev.code == "ArrowLeft") prev();
+            }
+        }, true);
+
+    });
+})(jQuery, unsafeWindow);
