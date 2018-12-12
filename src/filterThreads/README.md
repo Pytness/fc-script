@@ -10,7 +10,7 @@ no hay que volver a escribir los filtros.
 
 *Cuando se quita el checkbox, el almacenamiento local se borra también*
 
-*[Hilo](https://www.forocoches.com/foro/showthread.php?t=6633095)*
+*[Hilo](https://www.forocoches.com/foro/showthread.php?t=6794769)*
 
 *Idea de @Nordfront*
 
