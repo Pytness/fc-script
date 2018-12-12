@@ -7,6 +7,8 @@
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@7.28.11/dist/sweetalert2.all.min.js
+// @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/ImagePopUp/index.user.js
+// @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/ImagePopUp/index.user.js
 // @run-at       document-start
 // @grant        unsafeWindow
 // ==/UserScript==
