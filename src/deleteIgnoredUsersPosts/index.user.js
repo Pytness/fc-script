@@ -125,23 +125,40 @@
 
 	} else if (PATH === FC_PATHS.showthread) {
 		let authors = $('td.alt2 > div > b');
-		if (authors.length === 0) return;
+		if (authors.length !== 0) {
+			authors.each((i, author) => {
+				let uname = author.innerText; // possible xss injection
+				let lowerUname = uname.trim().toLowerCase();
 
-		authors.each((i, author) => {
-			let uname = author.innerText; // possible xss injection
-			let lowerUname = uname.trim().toLowerCase();
+				uname = safehtml(uname); // get rid of possible xss
 
-			uname = safehtml(uname); // get rid of possible xss
+				if (USERNAME_LIST.includes(lowerUname)) {
+					let td = author.parentElement.parentElement;
+					let text = td.lastElementChild;
 
-			if (USERNAME_LIST.includes(lowerUname)) {
-				let td = author.parentElement.parentElement;
-				let text = td.lastElementChild;
+					text.innerHTML = '<br>Este mensaje está oculto porque ' +
+						`<b>${uname}</b> está en tu ` +
+						`<a href="${FC_PATHS.ignorelist}" target="_blank">` +
+						'lista de ignorados</a>';
+				}
+			});
+		}
 
-				text.innerHTML = '<br>Este mensaje está oculto porque ' +
-					`<b>${uname}</b> está en tu ` +
-					`<a href="${FC_PATHS.ignorelist}" target="_blank">` +
-					'lista de ignorados</a>';
-			}
-		});
+
+		// Delete posts
+
+		let posts = $('div[align="center"] [id*="edit"]');
+		if (posts.length !== 0) {
+			posts.each((i, post) => {
+				let author = $(post).find('strong');
+
+				// Only ignored users posts have 1 strong element
+				if (author.length === 1) {
+					post.closest('div[align="center"]').remove();
+					// console.log(author);
+				}
+			});
+		}
+
 	}
 })();
