@@ -15,15 +15,18 @@
 		runat: "load"
 	});
 
+
 	MODULE.config.define("LAST_FILTERS", {
 		defaultValue: {
-			section: "hot",
+			section: "top",
 			sort: "viral",
 			window: "day",
 			page: "0",
 			mature: false
 		}
 	});
+
+	// MODULE
 	/**
 	*
 	*
@@ -39,14 +42,6 @@
 	const IMAGE_WIDTH = 210;
 
 	const KEY = "KeyI";
-
-	var OPTIONS = {
-		section: "hot",
-		sort: "viral",
-		window: "day",
-		page: "0",
-		mature: false
-	};
 
 	const IMGUR_API = "https://api.imgur.com/3";
 
@@ -150,7 +145,7 @@
 		}
 	}
 
-	class FiltersGUI{
+	class FiltersGUI {
 		constructor(section, sort, window, mature, page, next, numBtn, prev) {
 			this.section = section;
 			this.sort = sort;
@@ -162,6 +157,10 @@
 				numBtn: numBtn,
 				prev: prev
 			};
+		}
+		// TODO: savew options
+		static saveOptions(obj) {
+			MODULE.config.set("LAST_FILTERS", obj);
 		}
 
 		enablePaging() {
@@ -447,6 +446,7 @@
 
 					onClose: () => {
 						this.options = options;
+
 					}
 				});
 			});
