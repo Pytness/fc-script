@@ -266,14 +266,16 @@
 
 			//RE-ALIGNS MASONRY LAYOUT
 			function updateMasonry(length) {
-				let msnry = new Masonry(".msnryGrid", {
+				let msnry = $(".msnryGrid");
+
+				msnry.masonry({
 					itemSelector: ".msnryGrid-item",
 					gutter: 10
 				});
 
 				for (let i = 0; i < length; i++) {
 					$(`.msnryGrid-item.${i}`)[0].addEventListener("load", (elem) => {
-						msnry.appended(elem);
+						msnry.masonry().append(elem);
 					});
 				}
 
