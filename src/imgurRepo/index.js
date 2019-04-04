@@ -266,16 +266,14 @@
 
 			//RE-ALIGNS MASONRY LAYOUT
 			function updateMasonry(length) {
-				let msnry = $(".msnryGrid");
-
-				msnry.masonry({
+				let msnry = new Masonry(".msnryGrid", {
 					itemSelector: ".msnryGrid-item",
 					gutter: 10
 				});
 
 				for (let i = 0; i < length; i++) {
 					$(`.msnryGrid-item.${i}`)[0].addEventListener("load", (elem) => {
-						msnry.masonry().append(elem);
+						msnry.appended(elem);
 					});
 				}
 
@@ -457,7 +455,6 @@
 		$('html > head').append(IMGUR_CSS);
 
 		const OPTIONS = MODULE.config.get("LAST_FILTERS");
-
 
 		var panel = new ImagesPanel(OPTIONS);
 		panel.onClick(() => panel.showPanel());
