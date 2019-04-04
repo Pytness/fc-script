@@ -268,7 +268,7 @@
 			function updateMasonry(length) {
 				let msnry = $(".msnryGrid");
 
-				console.log(msnry);
+				console.log(Masonry);
 
 				msnry.masonry({
 					itemSelector: ".msnryGrid-item",
