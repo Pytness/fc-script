@@ -7,7 +7,7 @@
 	const MODULE = new Module({
 		moduleName: "IMGUR_REPO",
 		title: "Imgur Repository",
-		description: "repositorio d eimágenes de imgur",
+		description: "repositorio de imagenes de imgur",
 		version: "1.0",
 		author: "nurbian",
 		preload: ["https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"],
@@ -267,6 +267,8 @@
 			//RE-ALIGNS MASONRY LAYOUT
 			function updateMasonry(length) {
 				let msnry = $(".msnryGrid");
+
+				console.log(msnry);
 
 				msnry.masonry({
 					itemSelector: ".msnryGrid-item",
