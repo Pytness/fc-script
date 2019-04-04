@@ -268,8 +268,6 @@
 			function updateMasonry(length) {
 				let msnry = $(".msnryGrid");
 
-				console.log(window.$().masonry);
-
 				msnry.masonry({
 					itemSelector: ".msnryGrid-item",
 					gutter: 10
@@ -454,9 +452,6 @@
 			});
 		}
 	}
-
-
-
 
 	MODULE.onload = function() {
 		$('html > head').append(IMGUR_CSS);
