@@ -158,9 +158,15 @@
 				prev: prev
 			};
 		}
-		// TODO: savew options
-		static saveOptions(obj) {
-			MODULE.config.set("LAST_FILTERS", obj);
+
+		static options = {
+			save(obj) {
+				MODULE.config.set("LAST_FILTERS", obj);
+			},
+
+			load() {
+				MODULE.config.get("LAST_FILTERS");
+			}
 		}
 
 		enablePaging() {
@@ -331,6 +337,7 @@
 			}
 
 			function applyFilters(newOptions) {
+				FiltersGUI.options.save(newOptions);
 				options = newOptions;
 				updatePage();
 			}
@@ -445,8 +452,8 @@
 					},
 
 					onClose: () => {
+						FiltersGUI.options.save(options);
 						this.options = options;
-
 					}
 				});
 			});
@@ -456,7 +463,7 @@
 	MODULE.onload = function() {
 		$('html > head').append(IMGUR_CSS);
 
-		const OPTIONS = MODULE.config.get("LAST_FILTERS");
+		const OPTIONS = FiltersGUI.options.load();
 
 		var panel = new ImagesPanel(OPTIONS);
 		panel.onClick(() => panel.showPanel());
