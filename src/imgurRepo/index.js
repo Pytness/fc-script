@@ -112,8 +112,8 @@
 
 			return HTMLtag;
 		}
-		debugger;
 		static getBody(init) { //object OPTIONS
+			debugger;
 			let url = ImgurAPI.getURL(init);
 			let imgurHeader = new Headers({
 				"Authorization": `Client-ID ${CLIENT_ID}`
