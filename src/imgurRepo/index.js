@@ -452,8 +452,6 @@
 	MODULE.onload = function() {
 		$('html > head').append(IMGUR_CSS);
 
-		console.log(MODULE.config.get("LAST_FILTERS"));
-
 		const OPTIONS = MODULE.config.get("LAST_FILTERS");
 
 		var panel = new ImagesPanel(OPTIONS);
