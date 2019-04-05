@@ -113,7 +113,6 @@
 			return HTMLtag;
 		}
 		static getBody(init) { //object OPTIONS
-			debugger;
 			let url = ImgurAPI.getURL(init);
 			let imgurHeader = new Headers({
 				"Authorization": `Client-ID ${CLIENT_ID}`
@@ -157,16 +156,6 @@
 				numBtn: numBtn,
 				prev: prev
 			};
-		}
-
-		static options = {
-			save(obj) {
-				MODULE.config.set("LAST_FILTERS", obj);
-			},
-
-			load() {
-				MODULE.config.get("LAST_FILTERS");
-			}
 		}
 
 		enablePaging() {
@@ -337,7 +326,7 @@
 			}
 
 			function applyFilters(newOptions) {
-				FiltersGUI.options.save(newOptions);
+				MODULE.config.set("LAST_FILTERS", newOptions);
 				options = newOptions;
 				updatePage();
 			}
@@ -452,7 +441,7 @@
 					},
 
 					onClose: () => {
-						FiltersGUI.options.save(options);
+						MODULE.config.set("LAST_FILTERS", options);
 						this.options = options;
 					}
 				});
@@ -463,7 +452,9 @@
 	MODULE.onload = function() {
 		$('html > head').append(IMGUR_CSS);
 
-		const OPTIONS = FiltersGUI.options.load();
+		console.log(MODULE.config.get("LAST_FILTERS"));
+
+		const OPTIONS = MODULE.config.get("LAST_FILTERS");
 
 		var panel = new ImagesPanel(OPTIONS);
 		panel.onClick(() => panel.showPanel());
