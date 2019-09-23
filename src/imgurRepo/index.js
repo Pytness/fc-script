@@ -458,5 +458,6 @@
 		panel.onClick(() => panel.showPanel());
 	};
 
+	return MODULE;
 
 })();
