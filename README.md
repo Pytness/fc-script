@@ -46,8 +46,6 @@ Lista actual de proyectos:
 
 - [ ] ~~"Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*~~
 
-- [ ] ~~"Haz uno para cagarnos en tu madre" - *ContactoCero*~~
-
 - [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
 
