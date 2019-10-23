@@ -1,5 +1,7 @@
 # fc-script
 
+#### Este repositorio se está moviendo a https://github.com/fc-premium/fc-premium
+
 Scripts para forocoches.com, algunos completamente absurdos, otros que añaden funcionalidades.
 
 Lista actual de proyectos:
