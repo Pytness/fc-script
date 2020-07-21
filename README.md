@@ -44,11 +44,6 @@ Lista actual de proyectos:
 
 - [ ] "borrar todos los tus mensajes escritos" - *LeShamisen*
 
-- [ ] ~"Haz uno que elimine a todos los homos, me apetece ver FC convertido en un erial" - *Riso1111*~
-
-- [ ] ~~"Reporta automáticamente al OP y otros shurs del hilo al azar" - *Efraim27*~~
-
-- [ ] ~~"script que te enlace a un mesaje directamente al escribir #(numero de mensaje)" - *ChilyPicantito*~~
 
 
 [deleteIgnoredUsersPosts link]: https://github.com/Pytness/fc-script/tree/master/src/deleteIgnoredUsersPosts
