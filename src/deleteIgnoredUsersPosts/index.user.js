@@ -2,11 +2,12 @@
 // @name         Delete Ignored Users Posts
 // @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
 // @author       Pytness
-// @version      1.05
+// @version      1.06
 // @namespace    http://tampermonkey.net/
 // @match        https://www.forocoches.com/
 // @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
 // @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
+// @match        https://www.forocoches.com/foro/profile.php?do=addlist&userlist=ignore*
 // @match        https://www.forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.user.js
@@ -26,12 +27,21 @@
 
 	const PATH = location.pathname;
 	const URL_SEARCH = location.search;
+	const URL_SEARCH_PARAMS = new URLSearchParams(URL_SEARCH);
 
 	const FC_PATHS = {
 		absolute_path: '/',
 		showthread: '/foro/showthread.php',
+		profile: '/foro/profile.php',
 		ignorelist: '/foro/profile.php?do=ignorelist',
 		forumdisplay: '/foro/forumdisplay.php'
+	}
+
+	function is_adding_new_user() {
+		debugger
+		return PATH == FC_PATHS.profile &&
+			URL_SEARCH_PARAMS.get('do') === 'addlist' &&
+			URL_SEARCH_PARAMS.get('userlist') === 'ignore';
 	}
 
 	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
@@ -95,7 +105,7 @@
 
 	const [USER_ID_LIST, USERNAME_LIST] = getIgnoredUsersIdList();
 
-	if ((PATH + URL_SEARCH) === FC_PATHS.ignorelist) {
+	if ((PATH + URL_SEARCH) === FC_PATHS.ignorelist || is_adding_new_user()) {
 		localStorage.setItem(DO_UPDATE_LS_KEY, 1);
 
 	} else if (PATH === FC_PATHS.absolute_path) {
