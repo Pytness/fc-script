@@ -38,7 +38,6 @@
 	}
 
 	function is_adding_new_user() {
-		debugger
 		return PATH == FC_PATHS.profile &&
 			URL_SEARCH_PARAMS.get('do') === 'addlist' &&
 			URL_SEARCH_PARAMS.get('userlist') === 'ignore';
