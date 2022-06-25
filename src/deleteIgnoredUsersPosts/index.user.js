@@ -4,11 +4,11 @@
 // @author       Pytness
 // @version      1.06
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/
-// @match        https://www.forocoches.com/foro/forumdisplay.php?f=*
-// @match        https://www.forocoches.com/foro/profile.php?do=ignorelist*
-// @match        https://www.forocoches.com/foro/profile.php?do=addlist&userlist=ignore*
-// @match        https://www.forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/
+// @match        https://forocoches.com/foro/forumdisplay.php?f=*
+// @match        https://forocoches.com/foro/profile.php?do=ignorelist*
+// @match        https://forocoches.com/foro/profile.php?do=addlist&userlist=ignore*
+// @match        https://forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.user.js
 // @downloadURL  https://raw.githubusercontent.com/Pytness/fc-script/master/src/deleteIgnoredUsersPosts/index.user.js
@@ -43,7 +43,7 @@
 			URL_SEARCH_PARAMS.get('userlist') === 'ignore';
 	}
 
-	const IGNORED_USERS_URL = "https://www.forocoches.com/foro/profile.php?do=ignorelist";
+	const IGNORED_USERS_URL = "https://forocoches.com/foro/profile.php?do=ignorelist";
 
 	function getajax(url, param = '') {
 		let ajax = new XMLHttpRequest();
