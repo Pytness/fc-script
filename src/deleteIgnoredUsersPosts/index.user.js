@@ -2,7 +2,7 @@
 // @name         Delete Ignored Users Posts
 // @description  Deletes posts if its creator its in your ignored list (@zaguarman & @Papademos69)
 // @author       Pytness
-// @version      1.06
+// @version      1.07
 // @namespace    http://tampermonkey.net/
 // @match        https://forocoches.com/
 // @match        https://forocoches.com/foro/forumdisplay.php?f=*
