@@ -4,7 +4,7 @@
 // @author       Pytness
 // @version      1.0
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/foro/showthread.php?t=*
+// @match        https://forocoches.com/foro/showthread.php?t=*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/continuousScroll/index.user.js
 // @downloadURL  https://raw.githubusercontent.com/Pytness/fc-script/master/src/continuousScroll/index.user.js
