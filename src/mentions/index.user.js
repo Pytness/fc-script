@@ -4,8 +4,8 @@
 // @version      1.01
 // @description  Tabla con shurmanos que han posteado en la página actual al pulsar @
 // @author       Siralos & Pytness
-// @match        https://www.forocoches.com/foro/showthread.php*
-// @match        https://www.forocoches.com/foro/newreply.php*
+// @match        https://forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/foro/newreply.php*
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/mentions/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/mentions/index.user.js
 // @run-at       document-end
