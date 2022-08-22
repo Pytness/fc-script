@@ -4,9 +4,9 @@
 // @author       Pytness
 // @version      1.02
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/foro/showthread.php*
-// @match        https://www.forocoches.com/foro/newreply.php*
-// @match        https://www.forocoches.com/foro/private.php*
+// @match        https://forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/foro/newreply.php*
+// @match        https://forocoches.com/foro/private.php*
 // @resource     iconsJson https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/icons.json
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/iconAutocomplete/index.user.js
@@ -120,7 +120,7 @@
 		}
 
 		let ajax = new XMLHttpRequest();
-		ajax.open('GET', 'https://www.forocoches.com/foro/misc.php?do=getsmilies', false);
+		ajax.open('GET', 'https://forocoches.com/foro/misc.php?do=getsmilies', false);
 		ajax.send();
 
 

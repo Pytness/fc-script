@@ -5,7 +5,7 @@
 Este script para fc elimina todos los hilos de los usuarios que tengas en la lista de ignorados.
 También bloquea las citas a estos mismos.
 
-*[Hilo](https://www.forocoches.com/foro/showthread.php?t=6794769)*
+*[Hilo](https://forocoches.com/foro/showthread.php?t=6794769)*
 
 *Idea de @zaguarman y @Papademos69*
 

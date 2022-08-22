@@ -6,4 +6,4 @@ Este script para fc añade una ventana modal (pop up) al clickar en una imagen e
 
 *Idea de ChilyPicantito*
 
-*[Hilo](https://www.forocoches.com/foro/showthread.php?t=6633095)*
+*[Hilo](https://forocoches.com/foro/showthread.php?t=6633095)*

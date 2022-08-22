@@ -5,9 +5,9 @@
 // @version      1.0
 // @namespace    http://tampermonkey.net/
 // @resource     uploadIcon file:///home/pytness/github/fc-script/src/imageUploader/uploadIcon.gif
-// @match        https://www.forocoches.com/foro/showthread.php*
-// @match        https://www.forocoches.com/foro/newreply.php*
-// @match        https://www.forocoches.com/foro/private.php*
+// @match        https://forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/foro/newreply.php*
+// @match        https://forocoches.com/foro/private.php*
 // @run-at       document-end
 // @grant        GM_getResourceText
 // @grant        GM_getResourceURL
