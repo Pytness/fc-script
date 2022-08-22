@@ -6,9 +6,9 @@ Scripts para forocoches.com, algunos completamente absurdos, otros que añaden f
 
 Lista actual de proyectos:
 
-- [x] [[link]][iconAutocomplete link] "autocompletado de iconos" - *ChilyPicantito*
+- [x] [[link]][iconAutocomplete link] "autocompletado de iconos" - *mondflug*
 
-- [x] [[link]][mentionsAutocomplete link] "autocompletado de nicks para menciones" - *ChilyPicantito y Siralos*
+- [x] [[link]][mentionsAutocomplete link] "autocompletado de nicks para menciones" - *mondflug y Siralos*
 
 - [x] [[link]][deleteIgnoredUsersPosts link] "Ocultar los hilos y citas de los que tengas en ignorados." - *zaguarman*, *Papademos69*
 
@@ -22,7 +22,7 @@ Lista actual de proyectos:
 
 - [x] [[link]][filterThreads link] "filtro de hilos por palabras clave" - *Nordfront*
 
-- [x] [[link]][imagePopUp link] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *ChilyPicantito*
+- [x] [[link]][imagePopUp link] "abrir imagenes adjuntas en un 'dialog' en vez de una ventana a parte" - *mondflug*
 
 - [ ] "ventana flotante para citar o contestar a un mensaje sin necesidad de navegar hasta abajo" - *V de Vergansa*
 
@@ -57,6 +57,6 @@ Lista actual de proyectos:
 [imagePopUp link]: https://github.com/Pytness/fc-script/tree/master/src/imagePopUp
 
 #### Authors:
-- Pytness      => ~~@Chilypicantito~~ @mondflug
+- Pytness      => @mondflug (~~ChilyPicantito~~)
 - Siralosmdk   => @Siralos
 - comandantexd => @nurbian
