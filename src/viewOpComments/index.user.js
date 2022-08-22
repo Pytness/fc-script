@@ -4,7 +4,7 @@
 // @author       pytness
 // @version      1.2.3
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/viewOpComments/index.user.js
 // @downloadURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/viewOpComments/index.user.js
@@ -19,7 +19,7 @@
 
 	const INTERVAL_DELAY = 1000; // Min delay between page requests
 
-	const SHOWTHREAD_URL = 'https://www.forocoches.com/foro/showthread.php';
+	const SHOWTHREAD_URL = 'https://forocoches.com/foro/showthread.php';
 	const CURRENT_URL = new URL(location.href);
 	const URL_PARAMS = CURRENT_URL.searchParams;
 	const THREAD_ID = parseInt(URL_PARAMS.get('t'));
