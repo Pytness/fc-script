@@ -4,7 +4,7 @@
 // @author       nurbian
 // @version      1.0
 // @namespace    http://tampermonkey.net/
-// @match        https://www.forocoches.com/foro/showthread.php*
+// @match        https://forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@7.28.11/dist/sweetalert2.all.min.js
 // @updateURL    https://raw.githubusercontent.com/Pytness/fc-script/master/src/ImagePopUp/index.user.js
