@@ -4,8 +4,8 @@
 	// @author       comandantexd
 	// @version      1.03
 	// @namespace    http://tampermonkey.net/
-	// @match        https://www.forocoches.com/
-	// @match        https://www.forocoches.com/foro/forumdisplay.php*
+	// @match        https://forocoches.com/
+	// @match        https://forocoches.com/foro/forumdisplay.php*
 	// @require      https://code.jquery.com/jquery-3.3.1.min.js
 	// @require      https://cdn.jsdelivr.net/npm/sweetalert2@7.28.11/dist/sweetalert2.all.min.js
 	// @updateURL	 https://raw.githubusercontent.com/Pytness/fc-script/master/src/filterThreads/index.user.js
