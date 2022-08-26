@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MencionadorScriptForocoches
 // @namespace    http://tampermonkey.net/
-// @version      1.01
+// @version      1.02
 // @description  Tabla con shurmanos que han posteado en la página actual al pulsar @
 // @author       Siralos & Pytness
 // @match        https://forocoches.com/foro/showthread.php*

@@ -2,7 +2,7 @@
 // @name         ImagePopUp
 // @description  Este script muestra las imagenes adjuntas en una ventana modal (pop up)
 // @author       nurbian
-// @version      1.0
+// @version      1.1
 // @namespace    http://tampermonkey.net/
 // @match        https://forocoches.com/foro/showthread.php*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js

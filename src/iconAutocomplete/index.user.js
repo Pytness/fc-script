@@ -2,7 +2,7 @@
 // @name         Icon Autocomplete FC
 // @description  Autocomplete for icons in FC
 // @author       Pytness
-// @version      1.02
+// @version      1.03
 // @namespace    http://tampermonkey.net/
 // @match        https://forocoches.com/foro/showthread.php*
 // @match        https://forocoches.com/foro/newreply.php*

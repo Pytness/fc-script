@@ -2,7 +2,7 @@
 // @name         Filter Threads By Words
 // @description  Este script filtra los hilos que contengan las palabras clave que inserte el usuario.
 // @author       comandantexd
-// @version      1.03
+// @version      1.04
 // @namespace    http://tampermonkey.net/
 // @match        https://forocoches.com/
 // @match        https://forocoches.com/foro/forumdisplay.php*

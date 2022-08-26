@@ -2,7 +2,7 @@
 // @name         Image Uploader
 // @description  Upload images to imgur from fc
 // @author       Pytness
-// @version      1.0
+// @version      1.1
 // @namespace    http://tampermonkey.net/
 // @resource     uploadIcon file:///home/pytness/github/fc-script/src/imageUploader/uploadIcon.gif
 // @match        https://forocoches.com/foro/showthread.php*
