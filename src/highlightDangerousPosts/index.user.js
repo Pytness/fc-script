@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Highlight Dangerous Posts
 // @description  Este script destaca los hilos que sean +18, +16, +14, +nsfw, +serio
-// @author       comandantexd
+// @author       rawlines
 // @version      1.1
 // @namespace    http://tampermonkey.net/
 // @match        https://forocoches.com/

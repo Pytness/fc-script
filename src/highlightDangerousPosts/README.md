@@ -8,4 +8,4 @@ Este script para fc destaca los hilos que tengan *+18, +16, +14 +SERIO, +NSFW* e
 
 *Idea de @HANGUYOS*
 
-*By comandantexd*
+*By rawlines*

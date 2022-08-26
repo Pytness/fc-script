@@ -59,4 +59,4 @@ Lista actual de proyectos:
 #### Authors:
 - Pytness      => @mondflug (~~ChilyPicantito~~)
 - Siralosmdk   => @Siralos
-- comandantexd => @nurbian
+- rawlines => @nurbian

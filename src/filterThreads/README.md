@@ -13,4 +13,4 @@ En caso de deshabilitar la esta opción, los filtros se borran del navegador.
 
 *Idea de @Nordfront*
 
-*By comandantexd*
+*By rawlines*
