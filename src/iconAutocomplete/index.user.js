@@ -211,7 +211,7 @@
 		filteredIcons = filteredIcons.slice(0, bdata.maxRows);
 
 		filteredIcons.slice(0, bdata.maxRows).forEach((el, i) => {
-			html += `<span class="row"><span>${el[0]}</span> <img src="//st.forocoches.com/foro/images/smilies/${el[1]}" class="tm_img"></span>`;
+			html += `<span class="row"><span>${el[0]}</span> <img src="//forocoches.com/foro/images/smilies/${el[1]}" class="tm_img"></span>`;
 			html += i != filteredIcons.length - 1 ? '<br>' : '';
 		});
 
